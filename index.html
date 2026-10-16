@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ARテスト</title>
+  <!-- model-viewer(Google製)を読み込む。これだけでARが使える -->
+  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
+  <style>
+    body { margin: 0; font-family: sans-serif; }
+    model-viewer { width: 100%; height: 80vh; background: #f2f2f2; }
+    p { padding: 0 16px; }
+  </style>
+</head>
+<body>
+  <!--
+    src にモデル(GLB形式)のURLかファイル名を入れる。
+    あとで猫のモデルに差し替えるときは、src の中身だけ変えればよい。
+    例: src="cat.glb"(index.html と同じフォルダに cat.glb を置く)
+  -->
+  <model-viewer
+    src="https://modelviewer.dev/shared-assets/models/Astronaut.glb"
+    alt="3Dモデル"
+    ar
+    ar-modes="webxr scene-viewer quick-look"
+    camera-controls
+    touch-action="pan-y"
+    shadow-intensity="1">
+  </model-viewer>
+  <p>右下のARアイコン(または「ARで見る」ボタン)を押すと、カメラ越しに部屋へ置けます。</p>
+</body>
+</html>
