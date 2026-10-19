@@ -2,227 +2,295 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>うちの子に会おう</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cat Life AR - 猫との暮らしを体験</title>
 
   <script type="module"
     src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js">
   </script>
 
   <style>
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       margin: 0;
+      padding: 20px;
       font-family: sans-serif;
-      background: #fffaf5;
-      color: #493d35;
+      background: #fff8f0;
+      color: #40342e;
     }
 
     header {
-      padding: 22px 16px;
       text-align: center;
-      background: #f4dfcb;
+      margin-bottom: 24px;
     }
 
-    header h1 { margin: 0 0 8px; font-size: 25px; }
-    header p { margin: 0; font-size: 14px; }
+    h1 {
+      color: #a96743;
+      margin-bottom: 8px;
+    }
 
-    main { max-width: 700px; margin: auto; padding: 20px 16px; }
+    .subtitle {
+      color: #76685f;
+      font-size: 14px;
+    }
 
-    .cat-list {
+    #cat-list {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 14px;
+      grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+      gap: 16px;
+      max-width: 800px;
+      margin: 0 auto;
     }
 
     .cat-card {
       background: white;
       border-radius: 16px;
-      padding: 14px;
-      box-shadow: 0 2px 8px #00000010;
+      padding: 12px;
+      box-shadow: 0 3px 12px #0000000d;
+      overflow: hidden;
     }
 
-    .cat-icon {
-      height: 100px;
-      display: grid;
-      place-items: center;
-      background: #f8eee4;
+    .cat-photo {
+      display: block;
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
       border-radius: 12px;
-      font-size: 58px;
+      background: #eee5dc;
     }
 
-    .cat-card h2 { font-size: 18px; margin: 12px 0 6px; }
-    .cat-card p { font-size: 13px; line-height: 1.6; min-height: 40px; }
+    .cat-card h2 {
+      font-size: 19px;
+      margin: 12px 0 6px;
+    }
+
+    .cat-card p {
+      font-size: 13px;
+      line-height: 1.6;
+      min-height: 40px;
+      color: #76685f;
+    }
 
     button {
-      border: 0;
+      border: none;
       border-radius: 10px;
-      padding: 12px;
-      background: #bd7954;
+      padding: 12px 16px;
+      background: #b87850;
       color: white;
       font-size: 15px;
       cursor: pointer;
     }
 
-    .cat-card button, .ar-button { width: 100%; }
-
-    .back-button {
-      background: #e8ded5;
-      color: #493d35;
-      margin-bottom: 16px;
+    button:hover {
+      background: #965b38;
     }
 
-    .profile, .ar-panel {
-      background: white;
-      padding: 18px;
+    .cat-card button {
+      width: 100%;
+    }
+
+    #profile {
+      display: none;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    #profile-photo {
+      width: 100%;
+      max-height: 300px;
+      object-fit: cover;
       border-radius: 16px;
-      margin-top: 16px;
     }
 
-    .profile h2 { margin-top: 0; }
-    .profile p { line-height: 1.8; }
-    .ar-button { margin-top: 12px; }
+    #profile h2 {
+      color: #a96743;
+    }
+
+    .profile-info {
+      background: white;
+      border-radius: 14px;
+      padding: 16px;
+      margin: 16px 0;
+      line-height: 1.8;
+    }
+
+    #ar-section {
+      margin-top: 24px;
+      background: white;
+      padding: 16px;
+      border-radius: 16px;
+    }
 
     model-viewer {
+      display: block;
       width: 100%;
-      height: 55vh;
-      min-height: 300px;
-      background: #f2f2f2;
+      height: 350px;
+      background: #f3ece5;
       border-radius: 12px;
+      --poster-color: #f3ece5;
     }
 
-    .note { color: #77685e; font-size: 12px; line-height: 1.6; }
-    [hidden] { display: none !important; }
+    .hint {
+      font-size: 13px;
+      color: #76685f;
+      line-height: 1.7;
+    }
+
+    .back-button {
+      margin-bottom: 18px;
+      background: #76685f;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 12px;
+      color: #8b7d73;
+      margin-top: 32px;
+    }
   </style>
 </head>
 
 <body>
   <header>
-    <h1>うちの子に会おう 🐾</h1>
-    <p>気になる猫と、いっしょに暮らす未来を想像しよう。</p>
+    <h1>🐈 Cat Life AR</h1>
+    <p class="subtitle">猫との暮らしを、迎える前に体験してみよう。</p>
   </header>
 
   <main>
-    <section id="list-screen">
-      <h2>気になる猫を選んでください</h2>
-      <div id="cat-list" class="cat-list"></div>
-      <p class="note">※ 掲載している猫は動作確認用のサンプルです。</p>
+    <section id="cat-list-section">
+      <h2>一緒に暮らしたい猫を選ぼう</h2>
+      <p class="hint">
+        気になる猫のプロフィールを見て、お部屋での暮らしをARで体験できます。
+      </p>
+      <div id="cat-list"></div>
     </section>
 
-    <section id="detail-screen" hidden>
-      <button class="back-button" id="back-button">← 猫一覧に戻る</button>
+    <section id="profile">
+      <button class="back-button" id="back-button">← 猫の一覧に戻る</button>
 
-      <div class="profile">
-        <h2 id="cat-name"></h2>
-        <p id="cat-age"></p>
-        <p id="cat-personality"></p>
-        <p id="cat-likes"></p>
-        <p id="cat-care"></p>
+      <img id="profile-photo" src="" alt="猫の写真">
+
+      <h2 id="profile-name"></h2>
+
+      <div class="profile-info">
+        <p><strong>年齢：</strong><span id="profile-age"></span></p>
+        <p><strong>性格：</strong><span id="profile-personality"></span></p>
+        <p><strong>好きなこと：</strong><span id="profile-likes"></span></p>
+        <p><strong>一緒に暮らすポイント：</strong><span id="profile-care"></span></p>
       </div>
 
-      <button class="ar-button" id="show-ar-button">この子をARで見る</button>
+      <section id="ar-section">
+        <h2>お部屋で一緒に暮らしてみよう</h2>
+        <p class="hint">
+          下のARボタンを押して、床などの平らな場所に猫を配置してみましょう。
+          スマートフォンの機種やブラウザによってはARに対応していない場合があります。
+        </p>
 
-      <section id="ar-panel" class="ar-panel" hidden>
-        <h2>お部屋で会ってみよう</h2>
         <model-viewer
           id="cat-model"
           src="./domestic-cat-sitting.glb"
-          alt="猫の3Dモデル"
+          alt="座っている猫の3Dモデル"
           ar
           ar-modes="webxr scene-viewer quick-look"
           camera-controls
           touch-action="pan-y"
-          shadow-intensity="1">
+          shadow-intensity="1"
+          environment-image="neutral">
         </model-viewer>
-        <p class="note">ARボタンを押すと、対応端末では部屋に配置できます。</p>
+
+        <p class="hint">
+          💡 猫を迎える前に、生活スペースや家具の配置を想像してみましょう。
+          猫によって性格や行動は異なります。
+        </p>
       </section>
     </section>
   </main>
+
+  <footer>
+    Cat Life AR — 猫を迎える前の暮らし体験
+  </footer>
 
   <script>
     const cats = [
       {
         name: "ミケ",
-        age: "推定2歳",
-        personality: "性格：好奇心旺盛で遊ぶのが好き",
-        likes: "好きなこと：おもちゃで遊ぶこと",
-        care: "暮らす前のポイント：毎日遊ぶ時間を確保しましょう。",
-        icon: "🐈"
+        age: "2歳",
+        personality: "好奇心旺盛で、人と遊ぶのが好き。",
+        likes: "おもちゃ遊び、窓の外を眺めること。",
+        care: "遊ぶ時間をつくり、安全に過ごせる場所を用意しましょう。",
+        image: "./mike.jpg"
       },
       {
         name: "ソラ",
-        age: "推定4歳",
-        personality: "性格：おだやかで、ゆっくり過ごすのが好き",
-        likes: "好きなこと：窓辺で外を眺めること",
-        care: "暮らす前のポイント：安心して休める場所を用意しましょう。",
-        icon: "🐈‍⬛"
+        age: "1歳",
+        personality: "元気いっぱいで、活発に動くタイプ。",
+        likes: "走り回ること、高い場所に登ること。",
+        care: "上下運動ができる場所や、誤飲しそうな物がない環境が大切です。",
+        image: "./sora.jpg"
       },
       {
         name: "モモ",
-        age: "推定1歳",
-        personality: "性格：活発で、探検するのが好き",
-        likes: "好きなこと：いろいろな場所を探検すること",
-        care: "暮らす前のポイント：安全な遊び場を用意しましょう。",
-        icon: "🐱"
+        age: "4歳",
+        personality: "落ち着いていて、自分のペースを大切にするタイプ。",
+        likes: "静かな場所で休むこと、ゆっくり過ごすこと。",
+        care: "猫がひとりで安心して休める場所を用意しましょう。",
+        image: "./momo.jpg"
       }
     ];
 
-    const listScreen = document.getElementById("list-screen");
-    const detailScreen = document.getElementById("detail-screen");
     const catList = document.getElementById("cat-list");
-    const arPanel = document.getElementById("ar-panel");
+    const listSection = document.getElementById("cat-list-section");
+    const profile = document.getElementById("profile");
 
-    function showCats() {
-      cats.forEach(function(cat) {
-        const card = document.createElement("article");
-        card.className = "cat-card";
+    cats.forEach((cat, index) => {
+      const card = document.createElement("article");
+      card.className = "cat-card";
 
-        const icon = document.createElement("div");
-        icon.className = "cat-icon";
-        icon.textContent = cat.icon;
+      const photo = document.createElement("img");
+      photo.className = "cat-photo";
+      photo.src = cat.image;
+      photo.alt = cat.name + "の写真";
+      photo.loading = "lazy";
 
-        const title = document.createElement("h2");
-        title.textContent = cat.name;
+      const name = document.createElement("h2");
+      name.textContent = cat.name;
 
-        const description = document.createElement("p");
-        description.textContent = cat.personality;
+      const personality = document.createElement("p");
+      personality.textContent = cat.personality;
 
-        const button = document.createElement("button");
-        button.textContent = "この子を見る";
-        button.addEventListener("click", function() {
-          showProfile(cat);
-        });
+      const button = document.createElement("button");
+      button.textContent = "プロフィールを見る";
+      button.addEventListener("click", () => showProfile(index));
 
-        card.append(icon, title, description, button);
-        catList.appendChild(card);
-      });
-    }
-
-    function showProfile(cat) {
-      document.getElementById("cat-name").textContent = cat.icon + " " + cat.name;
-      document.getElementById("cat-age").textContent = cat.age;
-      document.getElementById("cat-personality").textContent = cat.personality;
-      document.getElementById("cat-likes").textContent = cat.likes;
-      document.getElementById("cat-care").textContent = cat.care;
-
-      arPanel.hidden = true;
-      listScreen.hidden = true;
-      detailScreen.hidden = false;
-    }
-
-    document.getElementById("back-button").addEventListener("click", function() {
-      detailScreen.hidden = true;
-      listScreen.hidden = false;
+      card.append(photo, name, personality, button);
+      catList.appendChild(card);
     });
 
-    document.getElementById("show-ar-button").addEventListener("click", function() {
-      arPanel.hidden = false;
-      arPanel.scrollIntoView({ behavior: "smooth" });
-    });
+    function showProfile(index) {
+      const cat = cats[index];
 
-    showCats();
+      document.getElementById("profile-photo").src = cat.image;
+      document.getElementById("profile-photo").alt = cat.name + "の写真";
+      document.getElementById("profile-name").textContent = cat.name;
+      document.getElementById("profile-age").textContent = cat.age;
+      document.getElementById("profile-personality").textContent = cat.personality;
+      document.getElementById("profile-likes").textContent = cat.likes;
+      document.getElementById("profile-care").textContent = cat.care;
+
+      listSection.style.display = "none";
+      profile.style.display = "block";
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    document.getElementById("back-button").addEventListener("click", () => {
+      profile.style.display = "none";
+      listSection.style.display = "block";
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
   </script>
 </body>
 </html>
