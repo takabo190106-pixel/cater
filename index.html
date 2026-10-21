@@ -5,25 +5,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#faf6ef">
-  <title>Cater — 猫との暮らしを、迎える前に。</title>
-
-  <script type="module"
-    src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js">
-  </script>
-
+  <title>プレおむ — ねこをお家にプレお迎え</title>
   <style>
     :root {
       --bg: #faf6ef;
-      --paper: #ffffff;
+      --paper: #fffdf9;
       --brown: #85543d;
-      --brown-dark: #5b392b;
+      --dark: #5b392b;
       --text: #40352e;
       --muted: #81756c;
       --accent: #c17c57;
       --soft: #f0e5d8;
       --line: #eadfd3;
-      --green: #66775a;
-      --shadow: 0 8px 28px #59402b0d;
     }
 
     * { box-sizing: border-box; }
@@ -36,31 +29,31 @@
         "Noto Sans JP", sans-serif;
       color: var(--text);
       background: var(--bg);
-      line-height: 1.7;
+      line-height: 1.8;
     }
 
-    button { font: inherit; }
+    a { color: inherit; text-decoration: none; }
 
     .site-header {
       padding: 18px 24px;
       border-bottom: 1px solid var(--line);
-      background: #faf6efeF;
+      background: var(--bg);
     }
 
     .nav {
       max-width: 1080px;
       margin: auto;
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
       gap: 16px;
     }
 
     .logo {
-      font-size: 23px;
+      font-size: 25px;
       font-weight: 800;
       letter-spacing: -1px;
-      color: var(--brown-dark);
+      color: var(--dark);
     }
 
     .logo span { color: var(--accent); }
@@ -72,542 +65,247 @@
 
     main {
       max-width: 1080px;
-      margin: 0 auto;
-      padding: 28px 24px 60px;
+      margin: auto;
+      padding: 36px 24px 70px;
     }
 
     .hero {
-      padding: 48px 36px;
-      border-radius: 26px;
+      min-height: 490px;
+      padding: 55px 48px;
+      border-radius: 28px;
       background: var(--soft);
       display: grid;
-      grid-template-columns: 1.25fr 0.75fr;
-      gap: 28px;
+      grid-template-columns: 1.2fr 0.8fr;
       align-items: center;
+      gap: 36px;
       overflow: hidden;
-      position: relative;
     }
 
     .eyebrow {
+      margin: 0 0 14px;
       color: var(--brown);
       font-size: 12px;
       font-weight: 800;
       letter-spacing: 2px;
-      margin: 0 0 12px;
     }
 
-    .hero h1 {
+    h1 {
       margin: 0;
-      color: var(--brown-dark);
-      font-size: clamp(28px, 4vw, 43px);
-      line-height: 1.35;
-      letter-spacing: -1px;
+      color: var(--dark);
+      font-size: clamp(34px, 5vw, 54px);
+      line-height: 1.45;
+      letter-spacing: -1.5px;
     }
 
     .hero-copy {
+      max-width: 470px;
+      margin: 20px 0 28px;
       color: #6f5c4f;
-      max-width: 480px;
-      margin: 16px 0 24px;
       font-size: 15px;
     }
 
-    .hero-visual {
-      min-height: 180px;
-      display: flex;
+    .primary-button {
+      display: inline-flex;
       align-items: center;
       justify-content: center;
-      text-align: center;
-      font-size: 100px;
-      background: #ffffff80;
-      border-radius: 22px;
-    }
-
-    .primary-button, .secondary-button {
-      border: none;
+      gap: 12px;
+      padding: 14px 23px;
+      border: 0;
       border-radius: 12px;
-      padding: 13px 20px;
-      cursor: pointer;
-      font-weight: 700;
-      transition: transform .18s, background .18s;
-    }
-
-    .primary-button {
-      color: white;
       background: var(--brown);
+      color: white;
+      font: inherit;
+      font-weight: 700;
+      transition: background .2s, transform .2s;
     }
 
     .primary-button:hover {
-      background: var(--brown-dark);
-      transform: translateY(-1px);
+      background: var(--dark);
+      transform: translateY(-2px);
     }
 
-    .secondary-button {
-      color: var(--brown-dark);
-      background: var(--soft);
+    .hero-visual {
+      min-height: 300px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 24px;
+      background: #ffffff80;
+      font-size: clamp(100px, 15vw, 170px);
     }
 
-    .secondary-button:hover { background: #e8d8c7; }
-
-    .section-heading {
-      margin: 42px 0 18px;
+    .intro {
+      max-width: 720px;
+      margin: 58px auto 0;
+      text-align: center;
     }
 
-    .section-heading h2 {
-      margin: 0;
+    .intro h2 {
+      margin: 0 0 12px;
+      color: var(--dark);
       font-size: 25px;
-      color: var(--brown-dark);
-      letter-spacing: -.5px;
     }
 
-    .section-heading p {
-      margin: 5px 0 0;
+    .intro p {
+      margin: 0;
       color: var(--muted);
       font-size: 14px;
     }
 
-    #cat-list {
+    .steps {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 22px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-top: 28px;
     }
 
-    .cat-card {
-      min-width: 0;
-      background: var(--paper);
-      border: 1px solid #eee5db;
-      border-radius: 20px;
-      padding: 12px;
-      box-shadow: var(--shadow);
-      transition: transform .2s, box-shadow .2s;
-    }
-
-    .cat-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 14px 32px #59402b14;
-    }
-
-    .cat-photo {
-      display: block;
-      width: 100%;
-      height: 235px;
-      object-fit: cover;
-      border-radius: 14px;
-      background: var(--soft);
-    }
-
-    .cat-card-content { padding: 10px 5px 5px; }
-
-    .cat-label {
-      display: inline-block;
-      background: #f4e9de;
-      color: var(--brown);
-      border-radius: 20px;
-      padding: 3px 10px;
-      font-size: 11px;
-      font-weight: 700;
-    }
-
-    .cat-card h3 {
-      margin: 8px 0 4px;
-      font-size: 22px;
-      color: var(--brown-dark);
-    }
-
-    .cat-card p {
-      margin: 0 0 16px;
-      min-height: 48px;
-      font-size: 13px;
-      color: var(--muted);
-    }
-
-    .cat-card button { width: 100%; }
-
-    #profile {
-      display: none;
-      max-width: 850px;
-      margin: 0 auto;
-    }
-
-    .back-button { margin-bottom: 22px; }
-
-    .profile-top {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      gap: 28px;
-      align-items: start;
-    }
-
-    #profile-photo {
-      width: 100%;
-      height: 380px;
-      object-fit: cover;
-      border-radius: 22px;
-      background: var(--soft);
-      box-shadow: var(--shadow);
-    }
-
-    .profile-summary {
-      padding: 8px 0;
-    }
-
-    .profile-summary h2 {
-      margin: 10px 0 12px;
-      font-size: 34px;
-      color: var(--brown-dark);
-      line-height: 1.3;
-    }
-
-    .profile-summary > p {
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    .profile-info {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-top: 20px;
-    }
-
-    .info-card {
-      background: white;
+    .step {
+      padding: 23px 18px;
       border: 1px solid var(--line);
-      border-radius: 14px;
-      padding: 14px;
-    }
-
-    .info-card .info-label {
-      display: block;
-      font-size: 12px;
-      color: var(--muted);
-      margin-bottom: 5px;
-    }
-
-    .info-card strong {
-      display: block;
-      color: var(--brown-dark);
-      font-size: 14px;
-    }
-
-    .care-panel {
-      margin-top: 26px;
-      padding: 22px;
       border-radius: 18px;
-      background: #eef0e7;
-      border: 1px solid #e0e5d7;
+      background: var(--paper);
+      text-align: center;
     }
 
-    .care-panel h3 {
-      margin: 0 0 8px;
-      color: #46563b;
-      font-size: 18px;
+    .step-number {
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 2px;
     }
 
-    .care-panel p {
+    .step h3 {
+      margin: 8px 0;
+      color: var(--dark);
+      font-size: 17px;
+    }
+
+    .step p {
       margin: 0;
-      color: #58634f;
-      font-size: 14px;
-    }
-
-    #ar-section {
-      margin-top: 30px;
-      padding: 24px;
-      background: white;
-      border: 1px solid var(--line);
-      border-radius: 22px;
-      box-shadow: var(--shadow);
-    }
-
-    #ar-section h3 {
-      margin: 0;
-      color: var(--brown-dark);
-      font-size: 23px;
-    }
-
-    .hint {
       color: var(--muted);
       font-size: 13px;
-      line-height: 1.8;
     }
 
-    model-viewer {
-      display: block;
-      width: 100%;
-      height: 390px;
-      margin-top: 16px;
-      background: #f5eee6;
-      border-radius: 16px;
-      --poster-color: #f5eee6;
+    .bottom-cta {
+      margin-top: 58px;
+      padding: 38px 22px;
+      border-radius: 24px;
+      background: #eee5d9;
+      text-align: center;
     }
 
-    .ar-note {
-      background: #faf6ef;
-      border-radius: 12px;
-      padding: 12px 15px;
-      margin-top: 14px;
+    .bottom-cta h2 {
+      margin: 0 0 8px;
+      color: var(--dark);
+      font-size: 25px;
+    }
+
+    .bottom-cta p {
+      margin: 0 0 22px;
+      color: var(--muted);
+      font-size: 14px;
     }
 
     footer {
-      text-align: center;
-      border-top: 1px solid var(--line);
       padding: 28px 16px;
+      border-top: 1px solid var(--line);
       color: var(--muted);
       font-size: 12px;
+      text-align: center;
+    }
+
+    footer strong {
+      color: var(--dark);
+      font-size: 15px;
     }
 
     @media (max-width: 720px) {
       .site-header { padding: 14px 18px; }
-      main { padding: 20px 16px 40px; }
+      main { padding: 20px 16px 45px; }
 
       .hero {
-        padding: 28px 22px;
+        min-height: auto;
+        padding: 32px 24px;
         grid-template-columns: 1fr;
-        gap: 20px;
+        gap: 24px;
       }
 
       .hero-visual {
-        min-height: 120px;
-        font-size: 75px;
+        min-height: 180px;
+        font-size: 110px;
       }
 
-      #cat-list {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 12px;
-      }
-
-      .cat-photo { height: 175px; }
-      .cat-card { padding: 9px; }
-      .cat-card h3 { font-size: 19px; }
-      .cat-card p { font-size: 12px; }
-
-      .profile-top { grid-template-columns: 1fr; gap: 16px; }
-      #profile-photo { height: 300px; }
-      .profile-summary h2 { font-size: 30px; }
-
-      #ar-section { padding: 16px; }
-      model-viewer { height: 330px; }
-    }
-
-    @media (max-width: 380px) {
-      #cat-list { grid-template-columns: 1fr; }
-      .cat-photo { height: 230px; }
-      .profile-info { grid-template-columns: 1fr; }
+      .steps { grid-template-columns: 1fr; }
+      .intro { margin-top: 42px; }
+      .bottom-cta { margin-top: 42px; }
       .nav-note { font-size: 11px; }
     }
   </style>
 </head>
-
 <body>
   <header class="site-header">
     <nav class="nav">
-      <div class="logo">Cater<span>.</span></div>
-      <div class="nav-note">猫との暮らしを、迎える前に。</div>
+      <a class="logo" href="./index.html">プレおむ<span>.</span></a>
+      <div class="nav-note">ねことの暮らしを、迎える前に。</div>
     </nav>
   </header>
 
   <main>
-    <section id="cat-list-section">
-      <div class="hero">
-        <div>
-          <p class="eyebrow">MEET YOUR FUTURE FAMILY</p>
-          <h1>猫との暮らしを、<br>迎える前に。</h1>
-          <p class="hero-copy">
-            写真やプロフィールを見るだけでは分からない、
-            猫との新しい生活を想像してみませんか？
-            気になる猫を選んで、お部屋での暮らしを体験しましょう。
-          </p>
-          <button class="primary-button" id="start-button">
-            猫たちに会ってみる ↓
-          </button>
-        </div>
-        <div class="hero-visual" aria-hidden="true">🐈</div>
+    <section class="hero">
+      <div>
+        <p class="eyebrow">IMAGINE YOUR FUTURE LIVES</p>
+        <h1>ねこをお家に<br>プレお迎え</h1>
+        <p class="hero-copy">
+          ねこと暮らす毎日って、どんな感じだろう？<br>
+          写真やプロフィールを見るだけでは分からない、
+          ねことの新しい生活を、迎える前に想像してみませんか？
+        </p>
+        <a class="primary-button" href="./cats.html">
+          猫たちに会ってみる <span aria-hidden="true">→</span>
+        </a>
       </div>
-
-      <div class="section-heading" id="cats-heading">
-        <h2>出会いを待っている猫たち</h2>
-        <p>気になる猫を選んで、性格や暮らしのポイントを見てみましょう。</p>
-      </div>
-
-      <div id="cat-list"></div>
+      <div class="hero-visual" aria-hidden="true">🐈</div>
     </section>
 
-    <section id="profile">
-      <button class="secondary-button back-button" id="back-button">
-        ← 猫たちの一覧に戻る
-      </button>
+    <section class="intro">
+      <p class="eyebrow">ABOUT PRE-OMU</p>
+      <h2>お迎えする前に、暮らしを想像しよう。</h2>
+      <p>
+        ねこと暮らすことは、楽しいことばかりではありません。<br>
+        性格や日々のお世話について知り、これからの暮らしを考えるきっかけに。
+      </p>
 
-      <div class="profile-top">
-        <img id="profile-photo" src="" alt="猫の写真">
-
-        <div class="profile-summary">
-          <span class="cat-label">MEET YOUR CAT</span>
-          <h2 id="profile-name"></h2>
-          <p id="profile-intro"></p>
-
-          <div class="profile-info">
-            <div class="info-card">
-              <span class="info-label">年齢</span>
-              <strong id="profile-age"></strong>
-            </div>
-            <div class="info-card">
-              <span class="info-label">性格</span>
-              <strong id="profile-personality"></strong>
-            </div>
-            <div class="info-card">
-              <span class="info-label">好きなこと</span>
-              <strong id="profile-likes"></strong>
-            </div>
-            <div class="info-card">
-              <span class="info-label">暮らしのヒント</span>
-              <strong>環境を整える</strong>
-            </div>
-          </div>
-        </div>
+      <div class="steps">
+        <article class="step">
+          <span class="step-number">STEP 01</span>
+          <h3>気になる猫を選ぶ</h3>
+          <p>それぞれの性格や好きなことを見てみよう。</p>
+        </article>
+        <article class="step">
+          <span class="step-number">STEP 02</span>
+          <h3>暮らしのことを知る</h3>
+          <p>一緒に暮らすときの工夫や注意点を知ろう。</p>
+        </article>
+        <article class="step">
+          <span class="step-number">STEP 03</span>
+          <h3>お部屋で想像する</h3>
+          <p>3DモデルやARで、ねこがいる生活を想像しよう。</p>
+        </article>
       </div>
+    </section>
 
-      <section class="care-panel">
-        <h3>🐾 一緒に暮らすためのポイント</h3>
-        <p id="profile-care"></p>
-      </section>
-
-      <section id="ar-section">
-        <h3>お部屋で一緒に暮らしてみよう</h3>
-        <p class="hint">
-          3Dモデルを動かして猫の姿を確認できます。
-          対応するスマートフォンでは「AR」ボタンから、
-          床などの平らな場所に猫を配置できます。
-        </p>
-
-        <model-viewer
-          id="cat-model"
-          src="./domestic-cat-sitting.glb"
-          alt="猫の3Dモデル"
-          ar
-          ar-modes="webxr scene-viewer quick-look"
-          camera-controls
-          touch-action="pan-y"
-          shadow-intensity="1"
-          environment-image="neutral"
-          loading="eager">
-        </model-viewer>
-
-        <div class="ar-note hint">
-          <strong>暮らしを想像してみよう</strong><br>
-          猫が過ごすスペースや家具の配置を考えてみましょう。
-          実際の性格や行動には個体差があります。
-        </div>
-      </section>
+    <section class="bottom-cta">
+      <h2>未来の家族に、会いに行こう。</h2>
+      <p>まずは3匹のプロフィールをのぞいてみてください。</p>
+      <a class="primary-button" href="./cats.html">
+        猫たちを見てみる <span aria-hidden="true">→</span>
+      </a>
     </section>
   </main>
 
   <footer>
-    <strong>Cater.</strong> — 猫を迎える前の暮らし体験<br>
-    <span>猫との出会いが、安心できる暮らしにつながりますように。</span>
+    <strong>プレおむ.</strong> — ねこをお家にプレお迎え<br>
+    ねことの出会いが、安心できる暮らしにつながりますように。
   </footer>
-
-  <script>
-    const cats = [
-      {
-        name: "ミケ",
-        age: "2歳",
-        personality: "好奇心旺盛",
-        intro: "人と遊ぶことが好きな、好奇心いっぱいの猫です。",
-        likes: "おもちゃ遊び・窓の外",
-        care: "一緒に遊ぶ時間をつくりましょう。家具などで爪とぎをする場合に備えて、適切な爪とぎ器や安心して過ごせる場所を用意しておくと安心です。",
-        image: "./mike.jpg",
-        model: "./mike.glb"
-      },
-      {
-        name: "ソラ",
-        age: "1歳",
-        personality: "活発で元気",
-        intro: "体を動かすことや、高い場所に登ることが好きな猫です。",
-        likes: "走ること・高い場所",
-        care: "上下運動ができる場所を用意し、誤飲につながる小物や危険な場所がないか確認しましょう。遊びの時間も大切です。",
-        image: "./sora.jpg",
-        model: "./domestic-cat-sitting.glb"
-      },
-      {
-        name: "モモ",
-        age: "4歳",
-        personality: "落ち着いた性格",
-        intro: "自分のペースを大切にしながら、ゆっくり過ごすことが好きな猫です。",
-        likes: "静かな場所・休息",
-        care: "猫がひとりで安心して休める場所を用意しましょう。来客や大きな音があるときも、猫が自分で離れられる環境が大切です。",
-        image: "./momo.jpg",
-        model: "./domestic-cat-sitting.glb"
-      }
-    ];
-
-    const catList = document.getElementById("cat-list");
-    const listSection = document.getElementById("cat-list-section");
-    const profile = document.getElementById("profile");
-    const catModel = document.getElementById("cat-model");
-
-    cats.forEach((cat, index) => {
-      const card = document.createElement("article");
-      card.className = "cat-card";
-
-      const photo = document.createElement("img");
-      photo.className = "cat-photo";
-      photo.src = cat.image;
-      photo.alt = cat.name + "の写真";
-      photo.loading = "lazy";
-
-      const content = document.createElement("div");
-      content.className = "cat-card-content";
-
-      const label = document.createElement("span");
-      label.className = "cat-label";
-      label.textContent = "家族を募集中";
-
-      const name = document.createElement("h3");
-      name.textContent = cat.name;
-
-      const personality = document.createElement("p");
-      personality.textContent = cat.intro;
-
-      const button = document.createElement("button");
-      button.className = "primary-button";
-      button.textContent = "プロフィールを見る";
-      button.addEventListener("click", () => showProfile(index));
-
-      content.append(label, name, personality, button);
-      card.append(photo, content);
-      catList.appendChild(card);
-    });
-
-    function showProfile(index) {
-      const cat = cats[index];
-
-      document.getElementById("profile-photo").src = cat.image;
-      document.getElementById("profile-photo").alt = cat.name + "の写真";
-      document.getElementById("profile-name").textContent = cat.name;
-      document.getElementById("profile-intro").textContent = cat.intro;
-      document.getElementById("profile-age").textContent = cat.age;
-      document.getElementById("profile-personality").textContent = cat.personality;
-      document.getElementById("profile-likes").textContent = cat.likes;
-      document.getElementById("profile-care").textContent = cat.care;
-
-      catModel.src = cat.model;
-
-      listSection.style.display = "none";
-      profile.style.display = "block";
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-
-    document.getElementById("back-button").addEventListener("click", () => {
-      profile.style.display = "none";
-      listSection.style.display = "block";
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    });
-
-    document.getElementById("start-button").addEventListener("click", () => {
-      document.getElementById("cats-heading").scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-      });
-    });
-  </script>
 </body>
 </html>
