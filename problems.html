@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#faf6ef">
+  <title>お部屋で起きそうなこと — プレおむ</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav">
+      <a class="logo" href="./index.html">プレおむ<span>.</span></a>
+      <div class="nav-note">ねことの暮らしを、迎える前に。</div>
+    </nav>
+  </header>
+
+  <main>
+    <ol class="steps-bar" id="steps"></ol>
+
+    <a class="back" href="./ar.html">← ARに戻る</a>
+    <p class="eyebrow">STEP 04</p>
+    <h1><span id="who"></span>と暮らす前に、知っておきたいこと</h1>
+    <p class="lead">
+      どんな猫と暮らしても、「あれ?」と思うことはあります。
+      先に知っておけば、迎える前に準備ができて、安心して暮らせます。
+    </p>
+
+    <div id="chips"></div>
+    <div id="problems"></div>
+
+    <p class="disclosure">
+      <span class="pr">PR</span>
+      「PR」のついた商品の紹介は、広告を含みます。
+      猫の行動には個体差があり、ここに書かれたことが必ず起きるわけではありません。
+    </p>
+
+    <section class="closing">
+      <h2>準備ができたら、きっと素敵な毎日になる。</h2>
+      <p>ねこと暮らす時間を、安心して楽しめますように。</p>
+      <div class="actions">
+        <button class="btn" id="again">別の猫も見てみる</button>
+        <a class="btn secondary" href="./index.html">トップへ戻る</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <strong>プレおむ.</strong> — ねこをお家にプレお迎え<br>
+    ねことの出会いが、安心できる暮らしにつながりますように。
+  </footer>
+
+  <script src="./app.js"></script>
+  <script>
+    var P = window.Preomu;
+    P.renderSteps(4);
+    var s = P.current();
+    var t = P.TYPES[s.type];
+
+    document.getElementById("who").textContent = s.name;
+
+    var chips = document.getElementById("chips");
+    [t.label, "好きなこと: " + t.likes].forEach(function (text) {
+      var c = document.createElement("span");
+      c.className = "chip";
+      c.textContent = text;
+      chips.appendChild(c);
+    });
+
+    function el(tag, cls, text) {
+      var e = document.createElement(tag);
+      if (cls) e.className = cls;
+      if (text !== undefined) e.textContent = text;
+      return e;
+    }
+
+    var box = document.getElementById("problems");
+    t.problems.forEach(function (p) {
+      var card = el("article", "problem");
+
+      var head = el("div", "problem-head");
+      head.appendChild(el("div", "icon", p.icon));
+      var wrap = el("div");
+      wrap.appendChild(el("h3", "", p.title));
+      var lv = el("div", "level");
+      lv.appendChild(el("span", "", "起きやすさ(目安)"));
+      lv.appendChild(document.createTextNode("★".repeat(p.level) + "☆".repeat(3 - p.level)));
+      wrap.appendChild(lv);
+      head.appendChild(wrap);
+      card.appendChild(head);
+
+      var flow = el("div", "flow");
+      var bad = el("div", "bad");
+      bad.appendChild(el("small", "", "こうなりがち"));
+      bad.appendChild(document.createTextNode(p.bad));
+      var good = el("div", "good");
+      good.appendChild(el("small", "", "こうすれば安心"));
+      good.appendChild(document.createTextNode(p.good));
+      flow.appendChild(bad);
+      flow.appendChild(good);
+      card.appendChild(flow);
+
+      var pr = el("div", "pr-row");
+      pr.appendChild(el("span", "pr", "PR"));
+      var info = el("div");
+      info.appendChild(el("strong", "", p.product.name));
+      info.appendChild(document.createElement("br"));
+      info.appendChild(el("span", "note", p.product.note));
+      pr.appendChild(info);
+      card.appendChild(pr);
+
+      box.appendChild(card);
+    });
+
+    document.getElementById("again").addEventListener("click", function () {
+      P.reset();
+      location.href = "./upload.html";
+    });
+  </script>
+</body>
+</html>

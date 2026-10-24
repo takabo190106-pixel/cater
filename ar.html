@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#faf6ef">
+  <title>お部屋でAR — プレおむ</title>
+  <link rel="stylesheet" href="./style.css">
+  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav">
+      <a class="logo" href="./index.html">プレおむ<span>.</span></a>
+      <div class="nav-note">ねことの暮らしを、迎える前に。</div>
+    </nav>
+  </header>
+
+  <main>
+    <ol class="steps-bar" id="steps"></ol>
+
+    <a class="back" href="./model.html">← 3Dモデルに戻る</a>
+    <p class="eyebrow">STEP 03</p>
+    <h1><span id="who"></span>が、お部屋に来たら</h1>
+    <p class="lead" id="lead"></p>
+
+    <div class="viewer-wrap">
+      <model-viewer
+        class="tall"
+        src="./domestic-cat-sitting.glb"
+        alt="お部屋に置ける猫の3Dモデル"
+        ar
+        ar-modes="webxr scene-viewer quick-look"
+        camera-controls
+        touch-action="pan-y"
+        shadow-intensity="1"
+        environment-image="neutral"
+        loading="eager">
+      </model-viewer>
+    </div>
+
+    <div class="card" style="margin-top:16px;">
+      <h2>ARで置いてみよう</h2>
+      <ol class="howto">
+        <li><b>1</b><span>画面の「AR」ボタン(立体のアイコン)を押します。</span></li>
+        <li><b>2</b><span>スマホをゆっくり動かして、床を映します。</span></li>
+        <li><b>3</b><span>好きな場所に猫を置いて、まわりを歩いてみましょう。</span></li>
+      </ol>
+      <p class="hint" style="margin:14px 0 0;">
+        ARボタンは、対応しているスマートフォンで表示されます。
+        見終わったら、この画面に戻って次に進みましょう。
+      </p>
+    </div>
+
+    <div class="actions">
+      <button class="btn" id="next">お部屋で起きそうなことを見る <span aria-hidden="true">→</span></button>
+    </div>
+  </main>
+
+  <footer>
+    <strong>プレおむ.</strong> — ねこをお家にプレお迎え<br>
+    ねことの出会いが、安心できる暮らしにつながりますように。
+  </footer>
+
+  <script src="./app.js"></script>
+  <script>
+    var P = window.Preomu;
+    P.renderSteps(3);
+    var s = P.current();
+    var t = P.TYPES[s.type];
+
+    document.getElementById("who").textContent = s.name;
+    document.getElementById("lead").textContent =
+      s.name + "は「" + t.likes + "」が好きなタイプ。お部屋のどこで過ごすかな?想像しながら、置いてみてください。";
+
+    document.getElementById("next").addEventListener("click", function () {
+      location.href = "./problems.html";
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#faf6ef">
+  <title>3Dモデル — プレおむ</title>
+  <link rel="stylesheet" href="./style.css">
+  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav">
+      <a class="logo" href="./index.html">プレおむ<span>.</span></a>
+      <div class="nav-note">ねことの暮らしを、迎える前に。</div>
+    </nav>
+  </header>
+
+  <main>
+    <ol class="steps-bar" id="steps"></ol>
+
+    <a class="back" href="./upload.html">← 写真を選びなおす</a>
+    <p class="eyebrow">STEP 02</p>
+    <h1><span id="who"></span>の3Dモデル</h1>
+    <p class="lead">
+      指で回したり、拡大したりして、いろいろな角度から見てみましょう。
+    </p>
+
+    <div class="stage">
+      <div class="card photo-card">
+        <img id="photo" alt="登録した猫の写真">
+        <p>登録した写真</p>
+      </div>
+
+      <div class="viewer-wrap">
+        <div class="loading" id="loading">
+          <div class="paw">🐾</div>
+          <strong id="msg">写真を読み込んでいます…</strong>
+          <div class="bar"><i id="bar"></i></div>
+        </div>
+        <model-viewer
+          id="mv"
+          src="./domestic-cat-sitting.glb"
+          alt="猫の3Dモデル"
+          camera-controls
+          auto-rotate
+          touch-action="pan-y"
+          shadow-intensity="1"
+          environment-image="neutral"
+          hidden>
+        </model-viewer>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn" id="next" disabled>お部屋に連れてくる(AR) <span aria-hidden="true">→</span></button>
+    </div>
+  </main>
+
+  <footer>
+    <strong>プレおむ.</strong> — ねこをお家にプレお迎え<br>
+    ねことの出会いが、安心できる暮らしにつながりますように。
+  </footer>
+
+  <script src="./app.js"></script>
+  <script>
+    var P = window.Preomu;
+    P.renderSteps(2);
+    var s = P.current();
+
+    document.getElementById("who").textContent = s.name;
+    var ph = document.getElementById("photo");
+    if (s.photo) { ph.src = s.photo; } else { ph.parentNode.hidden = true; }
+
+    var load = document.getElementById("loading");
+    var bar = document.getElementById("bar");
+    var msg = document.getElementById("msg");
+    var mv = document.getElementById("mv");
+    var next = document.getElementById("next");
+    var msgs = [
+      "写真を読み込んでいます…",
+      "猫のかたちをとらえています…",
+      "毛並みを整えています…",
+      "3Dモデルが完成しました!"
+    ];
+
+    function done() {
+      load.hidden = true;
+      mv.hidden = false;
+      next.disabled = false;
+    }
+
+    next.addEventListener("click", function () { location.href = "./ar.html"; });
+
+    if (s.generated) {
+      done();
+    } else {
+      var i = 0;
+      (function tick() {
+        msg.textContent = msgs[i];
+        bar.style.width = ((i + 1) / msgs.length * 100) + "%";
+        i++;
+        if (i < msgs.length) {
+          setTimeout(tick, 900);
+        } else {
+          setTimeout(function () {
+            s.generated = true;
+            P.save(s);
+            done();
+          }, 700);
+        }
+      })();
+    }
+  </script>
+</body>
+</html>

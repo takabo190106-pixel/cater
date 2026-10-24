@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#faf6ef">
+  <title>猫の写真を登録 — プレおむ</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav">
+      <a class="logo" href="./index.html">プレおむ<span>.</span></a>
+      <div class="nav-note">ねことの暮らしを、迎える前に。</div>
+    </nav>
+  </header>
+
+  <main>
+    <ol class="steps-bar" id="steps"></ol>
+
+    <a class="back" href="./index.html">← トップに戻る</a>
+    <p class="eyebrow">STEP 01</p>
+    <h1>気になる猫の写真を登録しよう</h1>
+    <p class="lead">
+      会いに行った猫の写真を選んでください。
+      この猫が、あなたのお部屋に来たらどんな毎日になるか、一緒に想像してみましょう。
+    </p>
+
+    <label class="drop" for="file">
+      <input type="file" id="file" accept="image/*">
+      <span id="drop-hint">
+        <span class="icon">📷</span><br>
+        <strong>タップして写真を選ぶ</strong><br>
+        <span class="hint">猫の全身が写っている写真だと、きれいに作れます</span>
+      </span>
+      <img id="preview" alt="選んだ猫の写真" hidden>
+    </label>
+
+    <div class="fields">
+      <div class="field">
+        <label for="name">猫の名前(わかれば)</label>
+        <input type="text" id="name" maxlength="12" placeholder="例: ミケ">
+      </div>
+      <div class="field">
+        <label for="type">猫の性格・様子</label>
+        <select id="type"></select>
+        <p class="hint">お店のスタッフさんから聞いた様子を選びます。</p>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn" id="next" disabled>3Dモデルを作る <span aria-hidden="true">→</span></button>
+    </div>
+
+    <div class="divider">写真がないときは、この3匹から</div>
+    <div class="samples" id="samples"></div>
+  </main>
+
+  <footer>
+    <strong>プレおむ.</strong> — ねこをお家にプレお迎え<br>
+    ねことの出会いが、安心できる暮らしにつながりますように。
+  </footer>
+
+  <script src="./app.js"></script>
+  <script>
+    var P = window.Preomu;
+    P.renderSteps(1);
+
+    var input = document.getElementById("file");
+    var prev = document.getElementById("preview");
+    var hint = document.getElementById("drop-hint");
+    var next = document.getElementById("next");
+    var nameEl = document.getElementById("name");
+    var typeEl = document.getElementById("type");
+    var photo = "";
+
+    typeEl.innerHTML = Object.keys(P.TYPES).map(function (k) {
+      return '<option value="' + k + '">' + P.TYPES[k].label + "</option>";
+    }).join("");
+
+    document.getElementById("samples").innerHTML = P.SAMPLES.map(function (s) {
+      return '<button class="sample" data-sample="' + s.id + '">' +
+        '<img src="' + s.photo + '" alt="' + s.name + 'の写真">' + s.name + "</button>";
+    }).join("");
+
+    /* スマホの大きな写真は、保存できる大きさに縮小してから使う */
+    function toDataURL(file, max) {
+      return new Promise(function (resolve, reject) {
+        var fr = new FileReader();
+        fr.onerror = reject;
+        fr.onload = function () {
+          var img = new Image();
+          img.onerror = reject;
+          img.onload = function () {
+            var r = Math.min(1, max / Math.max(img.width, img.height));
+            var c = document.createElement("canvas");
+            c.width = Math.round(img.width * r);
+            c.height = Math.round(img.height * r);
+            c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+            resolve(c.toDataURL("image/jpeg", 0.85));
+          };
+          img.src = fr.result;
+        };
+        fr.readAsDataURL(file);
+      });
+    }
+
+    input.addEventListener("change", function () {
+      var f = input.files[0];
+      if (!f) return;
+      toDataURL(f, 900).then(function (url) {
+        photo = url;
+        prev.src = url;
+        prev.hidden = false;
+        hint.hidden = true;
+        next.disabled = false;
+      }).catch(function () {
+        photo = "";
+        next.disabled = true;
+        alert("写真を読み込めませんでした。別の写真で試してください。");
+      });
+    });
+
+    next.addEventListener("click", function () {
+      P.save({
+        name: nameEl.value.trim() || "この子",
+        photo: photo,
+        type: typeEl.value,
+        generated: false
+      });
+      location.href = "./model.html";
+    });
+
+    document.querySelectorAll("[data-sample]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        var s = P.SAMPLES.filter(function (x) { return x.id === b.dataset.sample; })[0];
+        P.save({ name: s.name, photo: s.photo, type: s.type, generated: false });
+        location.href = "./model.html";
+      });
+    });
+  </script>
+</body>
+</html>
