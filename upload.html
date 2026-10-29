@@ -134,7 +134,7 @@
     document.querySelectorAll("[data-sample]").forEach(function (b) {
       b.addEventListener("click", function () {
         var s = P.SAMPLES.filter(function (x) { return x.id === b.dataset.sample; })[0];
-        P.save({ name: s.name, photo: s.photo, type: s.type, generated: false });
+        P.save({ name: s.name, photo: s.photo, type: s.type, model: s.model, generated: false });
         location.href = "./model.html";
       });
     });

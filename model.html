@@ -40,7 +40,6 @@
         </div>
         <model-viewer
           id="mv"
-          src="./domestic-cat-sitting.glb"
           alt="猫の3Dモデル"
           camera-controls
           auto-rotate
@@ -76,6 +75,7 @@
     var bar = document.getElementById("bar");
     var msg = document.getElementById("msg");
     var mv = document.getElementById("mv");
+    mv.src = s.model || P.DEFAULT_MODEL;
     var next = document.getElementById("next");
     var msgs = [
       "写真を読み込んでいます…",

@@ -78,9 +78,12 @@
     }
   };
 
+  /* 猫ごとの3Dモデルがないときに使う、共通のモデル */
+  var DEFAULT_MODEL = "./domestic-cat-sitting.glb";
+
   var SAMPLES = [
     { id: "mike", name: "ミケ", photo: "./mike.jpg", type: "curious" },
-    { id: "sora", name: "ソラ", photo: "./sora.jpg", type: "active" },
+    { id: "sora", name: "ソラ", photo: "./sora.jpg", type: "active", model: "./sora.glb" },
     { id: "momo", name: "モモ", photo: "./momo.jpg", type: "calm" }
   ];
 
@@ -97,7 +100,7 @@
     var s = load();
     if (s && s.type && TYPES[s.type]) return s;
     var d = SAMPLES[0];
-    return { name: d.name, photo: d.photo, type: d.type, generated: false };
+    return { name: d.name, photo: d.photo, type: d.type, model: d.model, generated: false };
   }
 
   function reset() {
@@ -116,7 +119,7 @@
   }
 
   window.Preomu = {
-    TYPES: TYPES, SAMPLES: SAMPLES,
+    TYPES: TYPES, SAMPLES: SAMPLES, DEFAULT_MODEL: DEFAULT_MODEL,
     load: load, save: save, current: current, reset: reset, renderSteps: renderSteps
   };
 })();
