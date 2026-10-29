@@ -70,7 +70,7 @@
     var t = P.TYPES[s.type];
 
     document.getElementById("who").textContent = s.name;
-    document.getElementById("mv").src = s.model || P.DEFAULT_MODEL;
+    document.getElementById("mv").setAttribute("src", s.model || P.DEFAULT_MODEL);
     document.getElementById("lead").textContent =
       s.name + "は「" + t.likes + "」が好きなタイプ。お部屋のどこで過ごすかな?想像しながら、置いてみてください。";
 

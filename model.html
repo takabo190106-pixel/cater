@@ -43,6 +43,7 @@
           alt="猫の3Dモデル"
           camera-controls
           auto-rotate
+          loading="eager"
           touch-action="pan-y"
           shadow-intensity="1"
           environment-image="neutral"
@@ -75,7 +76,7 @@
     var bar = document.getElementById("bar");
     var msg = document.getElementById("msg");
     var mv = document.getElementById("mv");
-    mv.src = s.model || P.DEFAULT_MODEL;
+    mv.setAttribute("src", s.model || P.DEFAULT_MODEL);
     var next = document.getElementById("next");
     var msgs = [
       "写真を読み込んでいます…",
