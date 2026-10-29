@@ -84,7 +84,7 @@
   var SAMPLES = [
     { id: "mike", name: "ミケ", photo: "./mike.jpg", type: "curious" },
     { id: "sora", name: "ソラ", photo: "./sora.jpg", type: "active", model: "./sora.glb" },
-    { id: "momo", name: "モモ", photo: "./momo.jpg", type: "calm" }
+    { id: "momo", name: "モモ", photo: "./momo.jpg", type: "calm", model: "./momo.glb" }
   ];
 
   function load() {
