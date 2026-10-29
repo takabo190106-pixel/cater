@@ -82,7 +82,7 @@
   var DEFAULT_MODEL = "./domestic-cat-sitting.glb";
 
   var SAMPLES = [
-    { id: "mike", name: "ミケ", photo: "./mike.jpg", type: "curious" },
+    { id: "mike", name: "ミケ", photo: "./mike.jpg", type: "curious", model: "./mike.glb" },
     { id: "sora", name: "ソラ", photo: "./sora.jpg", type: "active", model: "./sora.glb" },
     { id: "momo", name: "モモ", photo: "./momo.jpg", type: "calm", model: "./momo.glb" }
   ];
