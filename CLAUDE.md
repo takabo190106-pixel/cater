@@ -23,15 +23,13 @@
 ブラウザ → Cloudflare Worker(キーを持つ) → Google Gemini → JSON → 画面
 - Worker URL: https://broad-union-83be.takabo190106.workers.dev (Cloudflare アカウント takabo190106@gmail.com)
 - Worker の変数: `GEMINI_API_KEY`(Secret)、`GEMINI_MODEL`(Text)
-  - **未解決**: `GEMINI_MODEL` に、モデルIDでなくプロジェクト名 `gen-lang-client-...` が入っている。
-    AI Studioで確認した `gemini-...` のモデルIDに直してDeployする必要がある。
-- Worker の Deploy は済んでいるはず(コードは worker/index.js と同じ)。要・実機確認。
-- config.js の `PREOMU_API` は、まだ空。Worker が動くのを確認したら、上のURLを入れて push する。
+  - `GEMINI_MODEL` は `gemini-3.5-flash-lite`(無料枠: 15回/分、500回/日。2026-11-07 にAI Studioで確認)。
+- config.js の `PREOMU_API` には、上のURLが入っている。
 - AIにつながらないときは、「事前に用意した例」を、その旨を明示して表示する(偽の判断を見せない)。
 - 無料枠のみ使う。Googleの課金は有効にしない。
 
 ## 今後の作業(ユーザーの計画)
-1. Worker の動作確認 → config.js にURL → push → スマホで部屋写真を試す
+1. スマホで部屋写真を試す(Worker の修正と config.js の push は済み)
 2. ムードボード(ユーザーが後で渡す)に合わせて、サイト全体を再設計
 3. 猫の対策を「性格と問題の紐づけ」から「部屋写真を猫の目線で解説」へ(1の機能が土台)
 4. スライドを一から作り直す(現行: https://claude.ai/artifact/1zmAKG9aEfRuFPu5ASHbi4 は古い)
