@@ -140,7 +140,9 @@
       if (opts.exampleNote) banner.textContent = opts.exampleNote;
       // 例の表示や、部屋でなかったときは、比較ページへ進めません
       $("next-area").hidden = true;
-      if (!opts.exampleNote && !result.notRoom && result.items.length) {
+      if (opts.restored) {
+        $("next-area").hidden = false;
+      } else if (!opts.exampleNote && !result.notRoom && result.items.length) {
         $("next-area").hidden = !P.saveRoom({ photo: prev.src, result: result });
       }
 
@@ -243,7 +245,7 @@
       if (saved) {
         prev.src = saved.photo;
         $("input-area").hidden = true;
-        renderResult(saved.result);
+        renderResult(saved.result, { restored: true });
       }
     }
   </script>

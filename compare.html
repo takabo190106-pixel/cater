@@ -139,11 +139,17 @@
       $("before-note").textContent = "";
       var ctrl = new AbortController();
       var timer = setTimeout(function () { ctrl.abort(); }, 90000);
+      // 前のページで挙げた問題点を、そのまま画像の指示に使います
+      var damages = room.result.items.filter(function (it) {
+        return it.mood !== "like" && it.damage;
+      }).map(function (it) {
+        return { text: it.damage, box: it.box };
+      });
       prepare(room.photo).then(function (p) {
         return fetch(API, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ action: "mischief", image: p.image, mime: "image/jpeg", width: p.width, height: p.height }),
+          body: JSON.stringify({ action: "mischief", image: p.image, mime: "image/jpeg", width: p.width, height: p.height, damages: damages }),
           signal: ctrl.signal
         });
       }).then(function (res) {

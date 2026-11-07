@@ -16,10 +16,6 @@ const DAILY_LIMIT = 300;             // 1日の回数の上限(目安。再起�
 const ALLOWED_MIME = ["image/jpeg", "image/png", "image/webp"];
 const IMAGE_MODEL = "@cf/black-forest-labs/flux-2-klein-4b"; // Workers AI の画像モデル
 const DAILY_IMAGE_LIMIT = 60;        // 画像を作る回数の、1日の上限(目安)
-const MISCHIEF_PROMPT = "Edit this photo of a room. Keep exactly the same room, camera angle, walls, floor and furniture layout. " +
-  "Show the realistic aftermath of a playful cat's mischief using what is already in the room: scratched and frayed fabric on sofas or chairs, " +
-  "shredded curtains, chewed cables, things knocked off shelves and tables and scattered on the floor, tipped-over plants with spilled soil. " +
-  "One cat sits in the room looking innocent. Photorealistic. No people, no text.";
 
 let counter = { day: "", n: 0 };
 let imageCounter = { day: "", n: 0 };
@@ -53,6 +49,7 @@ function buildPrompt(catName) {
 - "say" は、猫の口調で、1文、40文字以内で書きます。語尾は「にゃ」「にゃぁ」などにします。かわいく、でも不安をあおりすぎないようにします。
 - "tip" は、人間向けの具体的な対策を、1文、60文字以内で書きます。mood が "mischief" のときは必ず書きます。"like" のときは、空の文字("")でも構いません。
 - "object" は、見つけたものの名前を、短く(20文字以内)書きます。
+- "damage" は、mood が "mischief" のときに、猫がいたずらした後にそのものがどう見えるかを、英語の短い1文(20語以内)で書きます。例: "The curtain is torn and hanging in shreds." "say" で話した問題と同じ内容にして、写真に写っているものだけについて書きます。"like" のときは、空の文字にします。
 - "box" は、そのものが写真のどこにあるかを [ymin, xmin, ymax, xmax] の形で、写真の縦横をそれぞれ 0〜1000 とした整数で書きます。
 - "overall" には、この部屋を猫の目で見た感想を、1文、50文字以内で書きます。
 - 写真に人や顔が写っていても、人については何も言いません。
@@ -60,7 +57,7 @@ function buildPrompt(catName) {
 - 部屋の写真ではないときは、"notRoom" を true にして、"items" を空の配列にします。
 
 出力は、次の形の JSON だけにします。説明や前置きは書きません。
-{"notRoom": false, "overall": "...", "items": [{"mood": "like" または "mischief", "object": "...", "say": "...", "tip": "...", "box": [0, 0, 1000, 1000]}]}`;
+{"notRoom": false, "overall": "...", "items": [{"mood": "like" または "mischief", "object": "...", "say": "...", "tip": "...", "damage": "...", "box": [0, 0, 1000, 1000]}]}`;
 }
 
 function toBox(v) { const b = Array.isArray(v) && v.length === 4 ? v.map(Number) : []; return b.length === 4 && b.every((n) => n >= 0 && n <= 1000) && b[0] < b[2] && b[1] < b[3] ? b : null; }
@@ -80,6 +77,7 @@ function clean(raw) {
       object: str(it && it.object, 30),
       say: str(it && it.say, 80),
       tip: str(it && it.tip, 100),
+      damage: str(it && it.damage, 160),
       box: toBox(it && it.box),
     })).filter((it) => it.object && it.say),
   };
@@ -91,9 +89,31 @@ function side(v) {
   return Number.isFinite(n) ? Math.min(1024, Math.max(256, n)) : 768;
 }
 
+// 枠の位置を、画像モデルに伝える言葉にします
+function where(b) {
+  const y = (b[0] + b[2]) / 2, x = (b[1] + b[3]) / 2;
+  return (y < 333 ? "upper " : y < 667 ? "middle " : "lower ") + (x < 333 ? "left" : x < 667 ? "center" : "right");
+}
+
+// 前のページで挙げた問題点だけを、画像に反映するよう指示します
+function buildMischiefPrompt(damages) {
+  const changes = damages.map((d, i) => `${i + 1}. ${d.text}${d.box ? ` (${where(d.box)} of the photo)` : ""}`).join(" ");
+  return "Edit this photo of a room. Keep the room, camera angle, walls, floor, furniture and lighting exactly the same. " +
+    "Apply only these changes, which show what a cat did: " + changes + " " +
+    "Everything else stays unchanged, clean and tidy. Do not add new objects, other than broken pieces or fallen items from these changes. " +
+    "One cat sits calmly near the damage. Photorealistic. No people, no text.";
+}
+
 // 部屋の写真から、猫にいたずらされた後のイメージ画像を作ります
 async function generateMischief(image, mime, body, env, origin) {
   if (!env.AI) return json({ error: "not_configured" }, 500, origin);
+
+  // 英語の文だけを受け取り、数と長さも制限します
+  const damages = (Array.isArray(body.damages) ? body.damages : []).slice(0, 6).map((d) => ({
+    text: str(d && d.text, 160).replace(/[^\x20-\x7E]/g, ""),
+    box: toBox(d && d.box),
+  })).filter((d) => d.text);
+  if (damages.length === 0) return json({ error: "no_damage" }, 400, origin);
 
   const day = new Date().toISOString().slice(0, 10);
   if (imageCounter.day !== day) imageCounter = { day, n: 0 };
@@ -101,7 +121,7 @@ async function generateMischief(image, mime, body, env, origin) {
   imageCounter.n += 1;
 
   const form = new FormData();
-  form.append("prompt", MISCHIEF_PROMPT);
+  form.append("prompt", buildMischiefPrompt(damages));
   form.append("input_image_0", new Blob([Uint8Array.from(atob(image), (c) => c.charCodeAt(0))], { type: mime }));
   form.append("width", String(side(body.width)));
   form.append("height", String(side(body.height)));
