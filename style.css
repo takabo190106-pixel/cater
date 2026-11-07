@@ -359,10 +359,52 @@ model-viewer.tall { height: 56vh; min-height: 340px; }
 /* 対策前後の比較(compare.html) */
 .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
 .compare-panel { margin: 0; min-width: 0; }
-.compare-list { margin: 12px 0 0; padding-left: 20px; font-size: 14px; }
-.compare-list strong { color: var(--ink); font-weight: 600; }
-.sticker { position: absolute; display: block; height: auto; pointer-events: none; filter: drop-shadow(0 0 1.5px var(--paper)) drop-shadow(0 1px 3px rgba(35, 34, 31, .35)); }
-.sticker.on-floor { transform: translate(-50%, -100%); }
+.compare-panel figcaption h2 { margin-bottom: 8px; }
+.before-stage { min-height: 220px; background: var(--paper); }
+.before-stage .loading { background: var(--paper); border-radius: 12px; }
+.editor-stage { overflow: hidden; user-select: none; -webkit-user-select: none; }
+.placed { position: absolute; transform: translate(-50%, -50%); touch-action: none; cursor: grab; }
+.placed > img { display: block; width: 100%; height: auto; filter: drop-shadow(0 0 1.5px var(--paper)) drop-shadow(0 1px 3px rgba(35, 34, 31, .35)); }
+.placed.selected { outline: 2px dashed var(--ink); outline-offset: 2px; }
+.placed-delete, .placed-resize {
+  display: none;
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  background: var(--paper);
+  color: var(--ink);
+  font: inherit;
+  font-size: 16px;
+  line-height: 1;
+  padding: 0;
+  touch-action: none;
+}
+.placed.selected .placed-delete, .placed.selected .placed-resize { display: grid; }
+.placed-delete { top: -4px; right: -4px; cursor: pointer; }
+.placed-resize { bottom: -4px; right: -4px; cursor: nwse-resize; }
+.palette { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.palette-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  min-width: 0;
+  padding: 8px 4px;
+  border: 1.5px solid var(--ink);
+  border-radius: var(--wobble);
+  background: var(--paper);
+  color: var(--ink);
+  font: inherit;
+  font-size: 11px;
+  line-height: 1.3;
+  cursor: pointer;
+}
+.palette-item:hover { background: var(--soft); }
+.palette-item img { display: block; width: 100%; max-width: 64px; height: 48px; object-fit: contain; }
 
 @media (max-width: 720px) {
   .site-header { padding: 14px 18px; }

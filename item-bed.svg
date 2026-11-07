@@ -8,9 +8,7 @@
   <g filter="url(#pencil)" fill="#f7f4ec" stroke="#23221f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
     <path d="M12 58 C12 30 168 30 168 58 C174 86 150 94 90 94 C30 94 6 86 12 58 Z"/>
     <path d="M30 62 C34 50 146 50 150 62 C152 74 128 80 90 80 C52 80 28 74 30 62 Z"/>
-    <path d="M60 67 C60 50 80 44 96 46 L102 34 L110 46 C122 50 128 58 124 68 C112 76 72 76 60 67 Z"/>
-    <path d="M78 48 L80 34 L90 44" />
-    <path d="M100 58 Q104 53 108 58 M84 58 Q88 53 92 58" fill="none" stroke-width="2"/>
     <path d="M20 44 L26 54 M36 38 L42 48 M140 38 L146 48 M156 44 L162 54" fill="none" stroke-width="1.7"/>
+    <path d="M60 66 L68 66 M84 70 L92 70 M108 66 L116 66" fill="none" stroke-width="1.5"/>
   </g>
 </svg>
