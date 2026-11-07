@@ -329,7 +329,17 @@ model-viewer.tall { height: 56vh; min-height: 340px; }
 /* 猫の目でお部屋を見る(room.html) */
 .notice { margin: 0 0 16px; padding: 14px 16px; border: 1.5px solid var(--line); border-radius: 14px; background: var(--paper); color: var(--ink); font-size: 13px; line-height: 1.7; }
 .example-banner { margin: 0 0 16px; padding: 14px 16px; border: 2px dashed var(--ink); border-radius: 14px; background: var(--paper); color: var(--ink); font-size: 14px; font-weight: 600; line-height: 1.7; }
-.bubble { margin: 0 0 12px; padding: 12px 16px; border: 1.5px solid var(--ink); border-radius: 18px 18px 18px 4px; color: var(--ink); font-size: 16px; font-weight: 600; line-height: 1.7; }
+.opinion { display: flex; align-items: flex-start; gap: 18px; margin: 20px 0; scroll-margin-top: 12px; }
+.cat-face { flex: none; display: block; width: 76px; height: auto; }
+.opinion-body { flex: 1; min-width: 0; }
+.speech { position: relative; padding: 12px 18px; border: 2px solid var(--ink); border-radius: var(--wobble); background: var(--paper); color: var(--ink); }
+.speech::before, .speech::after { content: ""; position: absolute; top: 20px; border-style: solid; border-color: transparent; }
+.speech::before { left: -14px; border-width: 8px 14px 8px 0; border-right-color: var(--ink); }
+.speech::after { left: -10px; top: 22px; border-width: 6px 11px 6px 0; border-right-color: var(--paper); }
+.speech h3 { margin: 0; font-size: 18px; line-height: 1.5; }
+.speech p { margin: 2px 0 0; font-size: 16px; font-weight: 600; line-height: 1.7; }
+.opinion:target .speech { border-width: 4px; }
+.opinion .tip { margin-top: 10px; }
 .tip { padding: 12px 14px; border-radius: 14px; background: repeating-linear-gradient(-45deg, transparent 0 6px, var(--hatch) 6px 7px), var(--soft); font-size: 14px; }
 .tip small { display: block; margin-bottom: 2px; font-weight: 600; color: var(--ink); }
 
@@ -345,8 +355,6 @@ model-viewer.tall { height: 56vh; min-height: 340px; }
   box-shadow: 0 0 0 2px var(--paper), inset 0 0 0 2px var(--paper);
 }
 .mark.like { border-style: dashed; }
-.problem { scroll-margin-top: 12px; }
-.problem:target { border-width: 4px; }
 
 @media (max-width: 720px) {
   .site-header { padding: 14px 18px; }
@@ -359,4 +367,6 @@ model-viewer.tall { height: 56vh; min-height: 340px; }
   .hero { min-height: auto; padding: 32px 24px; grid-template-columns: 1fr; gap: 24px; }
   .hero-visual img { width: min(70%, 240px); }
   .intro, .bottom-cta { margin-top: 42px; }
+  .opinion { gap: 14px; }
+  .cat-face { width: 56px; }
 }

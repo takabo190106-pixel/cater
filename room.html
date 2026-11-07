@@ -163,8 +163,7 @@
 
       result.items.forEach(function (it) {
         var like = it.mood === "like";
-        var box = el("div", "problem");
-        var head = el("div", "problem-head");
+        var box = el("div", "opinion");
         // 例の表示では、あなたの写真に印を付けません
         if (it.box && !opts.exampleNote) {
           pin += 1;
@@ -179,16 +178,22 @@
           marks.appendChild(mark);
           box.id = "item-" + pin;
         }
-        head.appendChild(el("div", "icon", like ? "🛋️" : "🐾"));
-        head.appendChild(el("h3", "", it.object));
-        box.appendChild(head);
-        box.appendChild(el("p", "bubble", "「" + it.say + "」"));
+        var face = el("img", "cat-face");
+        face.src = like ? "./cat-happy.svg" : "./cat-mischief.svg";
+        face.alt = like ? "うれしそうな猫" : "いたずらしそうな猫";
+        box.appendChild(face);
+        var body = el("div", "opinion-body");
+        var speech = el("div", "speech");
+        speech.appendChild(el("h3", "", it.object));
+        speech.appendChild(el("p", "", it.say));
+        body.appendChild(speech);
         if (!like && it.tip) {
           var tip = el("div", "tip");
           tip.appendChild(el("small", "", "こうすれば安心"));
           tip.appendChild(document.createTextNode(it.tip));
-          box.appendChild(tip);
+          body.appendChild(tip);
         }
+        box.appendChild(body);
         items.appendChild(box);
       });
       if (pin) { $("annotated-img").src = prev.src; figure.hidden = false; }
