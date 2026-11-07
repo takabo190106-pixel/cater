@@ -58,6 +58,13 @@
         <h2 id="overall-title"></h2>
         <p id="overall" class="lead" style="margin:0;"></p>
       </div>
+      <figure class="annotated" id="annotated" hidden>
+        <div class="annotated-photo">
+          <img id="annotated-img" alt="解析したお部屋の写真">
+          <div id="annotated-marks"></div>
+        </div>
+        <figcaption class="hint">番号を押すと、そのコメントへ移動します。黒い番号は困りごと、白い番号は居心地のよさそうな場所です。印の位置もAIの推測です。</figcaption>
+      </figure>
       <div id="items"></div>
       <p class="hint" id="ai-note">AIの推測です。実際のお部屋の様子とは違うことがあります。</p>
 
@@ -141,6 +148,8 @@
       $("ai-note").hidden = !!opts.exampleNote;
 
       var items = $("items"); items.innerHTML = "";
+      var figure = $("annotated"), marks = $("annotated-marks"), pin = 0;
+      figure.hidden = true; marks.innerHTML = "";
       if (result.notRoom) {
         $("overall-card").hidden = true;
         items.appendChild(el("div", "card", "お部屋の写真ではなさそうです。床やソファ、コードなどが写った、お部屋の写真で試してみてください。"));
@@ -156,6 +165,22 @@
         var like = it.mood === "like";
         var box = el("div", "problem");
         var head = el("div", "problem-head");
+        // 例の表示では、あなたの写真に印を付けません
+        if (it.box && !opts.exampleNote) {
+          pin += 1;
+          var kind = like ? "like" : "mischief";
+          var mark = el("a", "mark " + kind);
+          mark.href = "#item-" + pin;
+          mark.setAttribute("aria-label", pin + "番: " + it.object);
+          mark.style.top = it.box[0] / 10 + "%";
+          mark.style.left = it.box[1] / 10 + "%";
+          mark.style.height = (it.box[2] - it.box[0]) / 10 + "%";
+          mark.style.width = (it.box[3] - it.box[1]) / 10 + "%";
+          mark.appendChild(el("span", "pin " + kind, String(pin)));
+          marks.appendChild(mark);
+          box.id = "item-" + pin;
+          head.appendChild(el("span", "pin " + kind, String(pin)));
+        }
         head.appendChild(el("div", "icon", like ? "🛋️" : "🐾"));
         head.appendChild(el("h3", "", it.object));
         box.appendChild(head);
@@ -168,6 +193,7 @@
         }
         items.appendChild(box);
       });
+      if (pin) { $("annotated-img").src = prev.src; figure.hidden = false; }
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
 

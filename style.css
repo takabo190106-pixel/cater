@@ -333,6 +333,34 @@ model-viewer.tall { height: 56vh; min-height: 340px; }
 .tip { padding: 12px 14px; border-radius: 14px; background: repeating-linear-gradient(-45deg, transparent 0 6px, var(--hatch) 6px 7px), var(--soft); font-size: 14px; }
 .tip small { display: block; margin-bottom: 2px; font-weight: 600; color: var(--ink); }
 
+/* 写真の上の印 */
+.annotated { margin: 16px 0; }
+.annotated figcaption { margin-top: 8px; }
+.annotated-photo { position: relative; border: 2px solid var(--ink); border-radius: 14px; overflow: hidden; }
+.annotated-photo img { display: block; width: 100%; height: auto; }
+.mark {
+  position: absolute;
+  border: 2.5px solid var(--ink);
+  border-radius: var(--wobble);
+  box-shadow: 0 0 0 2px var(--paper), inset 0 0 0 2px var(--paper);
+}
+.mark.like { border-style: dashed; }
+.mark .pin { position: absolute; top: 2px; left: 2px; }
+.pin {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 14px;
+  font-weight: 600;
+}
+.pin.mischief { background: var(--ink); color: var(--paper); }
+.pin.like { background: var(--paper); color: var(--ink); }
+.problem { scroll-margin-top: 12px; }
+
 @media (max-width: 720px) {
   .site-header { padding: 14px 18px; }
   .nav-note { font-size: 11px; }
