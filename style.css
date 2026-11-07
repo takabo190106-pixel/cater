@@ -359,6 +359,11 @@ model-viewer.tall { height: 56vh; min-height: 340px; }
 /* 対策前後の比較(compare.html) */
 .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
 .compare-panel { margin: 0; min-width: 0; }
+.cost { margin-top: 40px; }
+.cost-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0 10px; }
+.cost-grid .card { text-align: center; }
+.cost-grid small { display: block; color: var(--muted); font-size: 13px; }
+.cost-grid strong { font-family: var(--hand); font-weight: 400; color: var(--ink); font-size: 30px; line-height: 1.4; }
 .compare-panel figcaption h2 { margin-bottom: 8px; }
 .before-stage { min-height: 220px; background: var(--paper); }
 .before-stage .loading { background: var(--paper); border-radius: 12px; }
@@ -410,7 +415,7 @@ model-viewer.tall { height: 56vh; min-height: 340px; }
   .site-header { padding: 14px 18px; }
   .nav-note { font-size: 11px; }
   main, main.wide { padding: 20px 16px 50px; }
-  .stage, .fields, .flow, .steps, .compare-grid { grid-template-columns: 1fr; }
+  .stage, .fields, .flow, .steps, .compare-grid, .cost-grid { grid-template-columns: 1fr; }
   .steps-bar li { flex-direction: column; gap: 2px; padding: 8px 4px; text-align: center; }
   .viewer-wrap { min-height: 300px; }
   model-viewer { height: 320px; }
