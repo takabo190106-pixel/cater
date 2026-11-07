@@ -25,6 +25,9 @@
     <p class="lead">
       指で回したり、拡大したりして、いろいろな角度から見てみましょう。
     </p>
+    <p class="hint">
+      いまの試作では、写真から3Dモデルを自動で作ってはいません。事前に作ったサンプルの3Dモデルを表示しています。
+    </p>
 
     <div class="stage">
       <div class="card photo-card">
@@ -35,7 +38,7 @@
       <div class="viewer-wrap">
         <div class="loading" id="loading">
           <div class="paw">🐾</div>
-          <strong id="msg">写真を読み込んでいます…</strong>
+          <strong id="msg">サンプルの3Dモデルを読み込んでいます…</strong>
           <div class="bar"><i id="bar"></i></div>
         </div>
         <model-viewer
@@ -79,10 +82,9 @@
     mv.setAttribute("src", s.model || P.DEFAULT_MODEL);
     var next = document.getElementById("next");
     var msgs = [
-      "写真を読み込んでいます…",
-      "猫のかたちをとらえています…",
-      "毛並みを整えています…",
-      "3Dモデルが完成しました!"
+      "サンプルの3Dモデルを読み込んでいます…",
+      "表示の準備をしています…",
+      "準備ができました!"
     ];
 
     function done() {
