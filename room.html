@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#faf6ef">
+  <title>猫の目でお部屋を見る — プレおむ</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav">
+      <a class="logo" href="./index.html">プレおむ<span>.</span></a>
+      <div class="nav-note">ねことの暮らしを、迎える前に。</div>
+    </nav>
+  </header>
+
+  <main>
+    <ol class="steps-bar" id="steps"></ol>
+
+    <a class="back" href="./ar.html">← ARに戻る</a>
+    <p class="eyebrow">STEP 04</p>
+    <h1><span id="who"></span>の目で、お部屋を見てみよう</h1>
+    <p class="lead">
+      お部屋の写真を1枚選んでください。猫になったつもりで、気になる場所と、その対策を教えます。
+    </p>
+
+    <section id="input-area">
+      <div class="notice">
+        <b>送られる写真について</b><br>
+        写真はAI(Google Gemini)に送られて、解析されます。顔や、住所などの個人情報が写っていない写真を選んでください。
+        結果はAIの推測なので、外れることがあります。
+      </div>
+
+      <label class="drop" for="file">
+        <input type="file" id="file" accept="image/*">
+        <span id="drop-hint">
+          <span class="icon">🛋️</span><br>
+          <strong>タップして、お部屋の写真を選ぶ</strong><br>
+          <span class="hint">床やソファ、コードなどが写っていると、よく分かります</span>
+        </span>
+        <img id="preview" alt="選んだお部屋の写真" hidden>
+      </label>
+
+      <div class="actions">
+        <button class="btn" id="go" disabled>猫の目で見てもらう <span aria-hidden="true">→</span></button>
+      </div>
+    </section>
+
+    <section id="loading" class="loading" hidden>
+      <div class="paw">🐾</div>
+      <p><b id="who2"></b>がお部屋を見ています…(10秒ほどかかります)</p>
+    </section>
+
+    <section id="result" hidden>
+      <div class="example-banner" id="example-banner" hidden></div>
+      <div class="card" id="overall-card" hidden>
+        <h2 id="overall-title"></h2>
+        <p id="overall" class="lead" style="margin:0;"></p>
+      </div>
+      <div id="items"></div>
+      <p class="hint" id="ai-note">AIの推測です。実際のお部屋の様子とは違うことがあります。</p>
+
+      <section class="closing">
+        <h2>ここまでで、猫との暮らしが少し見えてきましたか?</h2>
+        <p>気になるところは、迎える前にできる対策があります。</p>
+        <div class="actions" style="justify-content:center;">
+          <button class="btn secondary" id="retry">別の写真で試す</button>
+          <button class="btn" id="again">別の猫も見てみる</button>
+        </div>
+      </section>
+    </section>
+
+    <p class="hint" id="error" hidden></p>
+  </main>
+
+  <footer>
+    <strong>プレおむ.</strong> — ねこをお家にプレお迎え<br>
+    ねことの出会いが、安心できる暮らしにつながりますように。
+  </footer>
+
+  <script src="./config.js"></script>
+  <script src="./app.js"></script>
+  <script>
+    var P = window.Preomu;
+    P.renderSteps(4);
+    var s = P.current();
+    var API = window.PREOMU_API || "";
+
+    // 画面の部品
+    function $(id) { return document.getElementById(id); }
+    $("who").textContent = s.name;
+    $("who2").textContent = s.name;
+
+    var fileEl = $("file"), prev = $("preview"), hint = $("drop-hint"), go = $("go");
+    var photoBase64 = "";
+
+    // 写真を、送りやすい大きさ(長辺1024px)に縮めます
+    function shrink(file, max) {
+      return new Promise(function (resolve, reject) {
+        var r = new FileReader();
+        r.onerror = reject;
+        r.onload = function () {
+          var im = new Image();
+          im.onerror = reject;
+          im.onload = function () {
+            var k = Math.min(1, max / Math.max(im.width, im.height));
+            var c = document.createElement("canvas");
+            c.width = Math.round(im.width * k); c.height = Math.round(im.height * k);
+            c.getContext("2d").drawImage(im, 0, 0, c.width, c.height);
+            resolve(c.toDataURL("image/jpeg", 0.8));
+          };
+          im.src = r.result;
+        };
+        r.readAsDataURL(file);
+      });
+    }
+
+    fileEl.addEventListener("change", function () {
+      var f = fileEl.files && fileEl.files[0];
+      if (!f) return;
+      shrink(f, 1024).then(function (url) {
+        prev.src = url; prev.hidden = false; hint.hidden = true;
+        photoBase64 = url.split(",")[1];
+        go.disabled = false;
+      }).catch(function () { showError("写真を読み込めませんでした。別の写真を選んでください。"); });
+    });
+
+    function showError(msg) { var e = $("error"); e.textContent = msg; e.hidden = !msg; }
+
+    // 結果を画面に出します(AIの文章は、textContent で入れて、HTMLとして解釈させません)
+    function el(tag, cls, text) {
+      var n = document.createElement(tag);
+      if (cls) n.className = cls;
+      if (text) n.textContent = text;
+      return n;
+    }
+    function renderResult(result, opts) {
+      opts = opts || {};
+      $("input-area").hidden = true; $("loading").hidden = true; $("result").hidden = false;
+      var banner = $("example-banner");
+      banner.hidden = !opts.exampleNote;
+      if (opts.exampleNote) banner.textContent = opts.exampleNote;
+      $("ai-note").hidden = !!opts.exampleNote;
+
+      var items = $("items"); items.innerHTML = "";
+      if (result.notRoom) {
+        $("overall-card").hidden = true;
+        items.appendChild(el("div", "card", "お部屋の写真ではなさそうです。床やソファ、コードなどが写った、お部屋の写真で試してみてください。"));
+        return;
+      }
+      if (result.overall) {
+        $("overall-card").hidden = false;
+        $("overall-title").textContent = s.name + "の感想";
+        $("overall").textContent = result.overall;
+      } else { $("overall-card").hidden = true; }
+
+      result.items.forEach(function (it) {
+        var like = it.mood === "like";
+        var box = el("div", "problem");
+        var head = el("div", "problem-head");
+        head.appendChild(el("div", "icon", like ? "🛋️" : "🐾"));
+        head.appendChild(el("h3", "", it.object));
+        box.appendChild(head);
+        box.appendChild(el("p", "bubble", "「" + it.say + "」"));
+        if (!like && it.tip) {
+          var tip = el("div", "tip");
+          tip.appendChild(el("small", "", "こうすれば安心"));
+          tip.appendChild(document.createTextNode(it.tip));
+          box.appendChild(tip);
+        }
+        items.appendChild(box);
+      });
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    // 事前に用意した例(AIにつながらないとき用)。あなたの写真の判断ではありません。
+    var EXAMPLE = {
+      notRoom: false,
+      overall: "ひろくて、昼寝できそうな場所がたくさんあるにゃ。",
+      items: [
+        { mood: "like", object: "日の当たるソファ", say: "ここでお昼寝したいにゃ。ぽかぽかにゃぁ。", tip: "" },
+        { mood: "mischief", object: "床を這う電源コード", say: "ゆらゆらしてて、つい噛みたくなるにゃぁ。", tip: "コードカバーで隠すか、家具の裏に通しておく。" },
+        { mood: "mischief", object: "布張りのソファの角", say: "このソファ、爪を研ぐのによさそうだにゃ。", tip: "近くに爪とぎを置いて、ソファの角には保護シートを貼る。" },
+        { mood: "mischief", object: "窓のカーテン", say: "登ったら、いい景色が見えそうだにゃ。", tip: "カーテンは短めにするか、窓辺に登れる台を用意する。" }
+      ]
+    };
+
+    function exampleView(reason) {
+      renderResult(EXAMPLE, { exampleNote: reason + "ここに出ているのは、事前に用意した例です。あなたの写真の判断ではありません。" });
+    }
+
+    go.addEventListener("click", function () {
+      showError("");
+      if (!API) { exampleView("いまは、AIにつながる設定がされていません。"); return; }
+      $("input-area").hidden = true; $("loading").hidden = false;
+      var ctrl = new AbortController();
+      var timer = setTimeout(function () { ctrl.abort(); }, 45000);
+      fetch(API, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ image: photoBase64, mime: "image/jpeg", catName: s.name }),
+        signal: ctrl.signal
+      }).then(function (res) {
+        return res.json().catch(function () { return {}; }).then(function (data) { return { res: res, data: data }; });
+      }).then(function (o) {
+        clearTimeout(timer);
+        if (o.res.ok && o.data && o.data.ok && o.data.result) { renderResult(o.data.result); return; }
+        var reason = o.data && o.data.error === "limit" ? "きょうのAIの利用が、上限に達しました。" : "いま、AIにつながりませんでした。";
+        exampleView(reason);
+      }).catch(function () {
+        clearTimeout(timer);
+        exampleView("いま、AIにつながりませんでした。");
+      });
+    });
+
+    $("retry").addEventListener("click", function () {
+      $("result").hidden = true; $("input-area").hidden = false;
+      fileEl.value = ""; prev.hidden = true; hint.hidden = false; go.disabled = true; photoBase64 = "";
+      window.scrollTo({ top: 0 });
+    });
+    $("again").addEventListener("click", function () { P.reset(); location.href = "./upload.html"; });
+  </script>
+</body>
+</html>
