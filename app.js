@@ -117,7 +117,7 @@
     try { return JSON.parse(sessionStorage.getItem(ROOM_KEY)) || null; } catch (e) { return null; }
   }
 
-  var STEP_NAMES = ["写真", "3Dモデル", "AR", "猫の目", "比べる"];
+  var STEP_NAMES = ["写真", "3D・AR", "猫の目", "正しい知識"];
 
   function renderSteps(n) {
     var el = document.getElementById("steps");
