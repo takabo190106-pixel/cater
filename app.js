@@ -1,6 +1,7 @@
 /* プレおむ — 画面をまたいで「どの猫か」を引き継ぐ共通スクリプト */
 (function () {
   var KEY = "preomu-state";
+  var ROOM_KEY = "preomu-room";
 
   /* 猫のタイプ別の「部屋で起きそうなこと」。level は起きやすさの目安(1〜3) */
   var TYPES = {
@@ -107,7 +108,16 @@
     try { sessionStorage.removeItem(KEY); } catch (e) { /* 何もしない */ }
   }
 
-  var STEP_NAMES = ["写真", "3Dモデル", "AR", "猫の目"];
+  /* 部屋の写真と解析結果を、比較ページへ引き継ぐ */
+  function saveRoom(room) {
+    try { sessionStorage.setItem(ROOM_KEY, JSON.stringify(room)); return true; } catch (e) { return false; }
+  }
+
+  function loadRoom() {
+    try { return JSON.parse(sessionStorage.getItem(ROOM_KEY)) || null; } catch (e) { return null; }
+  }
+
+  var STEP_NAMES = ["写真", "3Dモデル", "AR", "猫の目", "比べる"];
 
   function renderSteps(n) {
     var el = document.getElementById("steps");
@@ -120,6 +130,7 @@
 
   window.Preomu = {
     TYPES: TYPES, SAMPLES: SAMPLES, DEFAULT_MODEL: DEFAULT_MODEL,
-    load: load, save: save, current: current, reset: reset, renderSteps: renderSteps
+    load: load, save: save, current: current, reset: reset, renderSteps: renderSteps,
+    saveRoom: saveRoom, loadRoom: loadRoom
   };
 })();

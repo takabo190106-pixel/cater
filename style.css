@@ -356,11 +356,19 @@ model-viewer.tall { height: 56vh; min-height: 340px; }
 }
 .mark.like { border-style: dashed; }
 
+/* 対策前後の比較(compare.html) */
+.compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
+.compare-panel { margin: 0; min-width: 0; }
+.compare-list { margin: 12px 0 0; padding-left: 20px; font-size: 14px; }
+.compare-list strong { color: var(--ink); font-weight: 600; }
+.sticker { position: absolute; display: block; height: auto; pointer-events: none; filter: drop-shadow(0 0 1.5px var(--paper)) drop-shadow(0 1px 3px rgba(35, 34, 31, .35)); }
+.sticker.on-floor { transform: translate(-50%, -100%); }
+
 @media (max-width: 720px) {
   .site-header { padding: 14px 18px; }
   .nav-note { font-size: 11px; }
   main, main.wide { padding: 20px 16px 50px; }
-  .stage, .fields, .flow, .steps { grid-template-columns: 1fr; }
+  .stage, .fields, .flow, .steps, .compare-grid { grid-template-columns: 1fr; }
   .steps-bar li { flex-direction: column; gap: 2px; padding: 8px 4px; text-align: center; }
   .viewer-wrap { min-height: 300px; }
   model-viewer { height: 320px; }

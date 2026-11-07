@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 160">
+  <defs>
+    <filter id="pencil" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency=".05" numOctaves="3" seed="2"/>
+      <feDisplacementMap in="SourceGraphic" scale="2.5"/>
+    </filter>
+  </defs>
+  <g filter="url(#pencil)" fill="#f7f4ec" stroke="#23221f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="34" y="16" width="32" height="124"/>
+    <rect x="8" y="138" width="84" height="16" rx="4"/>
+    <rect x="28" y="6" width="44" height="12" rx="4"/>
+    <path d="M34 34 L66 26 M34 50 L66 42 M34 66 L66 58 M34 82 L66 74 M34 98 L66 90 M34 114 L66 106 M34 130 L66 122" fill="none" stroke-width="1.8"/>
+  </g>
+</svg>

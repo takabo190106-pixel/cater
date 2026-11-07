@@ -63,19 +63,12 @@
           <img id="annotated-img" alt="解析したお部屋の写真">
           <div id="annotated-marks"></div>
         </div>
-        <figcaption class="hint">枠を押すと、そのコメントへ移動します。実線は困りごと、点線は居心地のよさそうな場所です。枠の位置もAIの推測です。</figcaption>
+        <figcaption class="hint">枠を押すと、そのコメントへ移動します。実線は困りごと、点線は居心地のよさそうな場所です。コメントも枠の位置もAIの推測で、実際とは違うことがあります。</figcaption>
       </figure>
       <div id="items"></div>
-      <p class="hint" id="ai-note">AIの推測です。実際のお部屋の様子とは違うことがあります。</p>
-
-      <section class="closing">
-        <h2>ここまでで、猫との暮らしが少し見えてきましたか?</h2>
-        <p>気になるところは、迎える前にできる対策があります。</p>
-        <div class="actions" style="justify-content:center;">
-          <button class="btn secondary" id="retry">別の写真で試す</button>
-          <button class="btn" id="again">別の猫も見てみる</button>
-        </div>
-      </section>
+      <div class="actions" id="next-area" hidden>
+        <a class="btn" href="./compare.html">対策した部屋と比べる <span aria-hidden="true">→</span></a>
+      </div>
     </section>
 
     <p class="hint" id="error" hidden></p>
@@ -145,7 +138,11 @@
       var banner = $("example-banner");
       banner.hidden = !opts.exampleNote;
       if (opts.exampleNote) banner.textContent = opts.exampleNote;
-      $("ai-note").hidden = !!opts.exampleNote;
+      // 例の表示や、部屋でなかったときは、比較ページへ進めません
+      $("next-area").hidden = true;
+      if (!opts.exampleNote && !result.notRoom && result.items.length) {
+        $("next-area").hidden = !P.saveRoom({ photo: prev.src, result: result });
+      }
 
       var items = $("items"); items.innerHTML = "";
       var figure = $("annotated"), marks = $("annotated-marks"), pin = 0;
@@ -240,12 +237,15 @@
       });
     });
 
-    $("retry").addEventListener("click", function () {
-      $("result").hidden = true; $("input-area").hidden = false;
-      fileEl.value = ""; prev.hidden = true; hint.hidden = false; go.disabled = true; photoBase64 = "";
-      window.scrollTo({ top: 0 });
-    });
-    $("again").addEventListener("click", function () { P.reset(); location.href = "./upload.html"; });
+    // 比較ページから戻ったときは、前の結果をもう一度表示します
+    if (location.search === "?saved") {
+      var saved = P.loadRoom();
+      if (saved) {
+        prev.src = saved.photo;
+        $("input-area").hidden = true;
+        renderResult(saved.result);
+      }
+    }
   </script>
 </body>
 </html>

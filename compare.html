@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#e4e4e2">
+  <title>対策前後を比べる — プレおむ</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav">
+      <a class="logo" href="./index.html">プレおむ<span>.</span></a>
+      <div class="nav-note">ねことの暮らしを、迎える前に。</div>
+    </nav>
+  </header>
+
+  <main class="wide">
+    <ol class="steps-bar" id="steps"></ol>
+
+    <a class="back" href="./room.html?saved">← 猫の意見に戻る</a>
+    <p class="eyebrow">STEP 05</p>
+    <h1>対策すると、お部屋はどう変わる?</h1>
+    <p class="lead">同じお部屋で、対策しない場合と、猫を迎える準備をした場合を比べてみましょう。</p>
+
+    <div class="card" id="empty" hidden>
+      <h2>まだお部屋の写真がありません</h2>
+      <p class="lead">先に、お部屋の写真を猫の目で見てもらいましょう。</p>
+      <a class="btn" href="./room.html">お部屋の写真を選ぶ <span aria-hidden="true">→</span></a>
+    </div>
+
+    <section id="compare" hidden>
+      <div class="compare-grid">
+        <figure class="compare-panel">
+          <figcaption><h2>対策しない場合</h2></figcaption>
+          <div class="annotated-photo">
+            <img id="before-img" alt="対策をしていないお部屋の写真">
+            <div id="before-marks"></div>
+          </div>
+          <ul class="compare-list" id="before-list"></ul>
+        </figure>
+        <figure class="compare-panel">
+          <figcaption><h2>対策した場合</h2></figcaption>
+          <div class="annotated-photo">
+            <img id="after-img" alt="猫のための設備のイラストを重ねたお部屋の写真">
+            <div id="after-marks"></div>
+          </div>
+          <ul class="compare-list" id="after-list"></ul>
+        </figure>
+      </div>
+      <p class="hint">「対策した場合」は、写真にイラストを重ねたイメージです。置き場所と内容はAIの推測で、大きさは実物と違います。</p>
+      <div class="actions">
+        <a class="btn secondary" href="./room.html">別の写真で試す</a>
+        <a class="btn" href="./upload.html">別の猫も見てみる</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <strong>プレおむ.</strong> — ねこをお家にプレお迎え<br>
+    ねことの出会いが、安心できる暮らしにつながりますように。
+  </footer>
+
+  <script src="./app.js"></script>
+  <script>
+    var P = window.Preomu;
+    P.renderSteps(5);
+
+    var ADDONS = {
+      tower: { label: "キャットタワー", src: "./item-tower.svg", width: 24, ratio: 200 / 120 },
+      bed: { label: "猫用ベッド", src: "./item-bed.svg", width: 24, ratio: 100 / 180 },
+      toilet: { label: "猫用トイレ", src: "./item-toilet.svg", width: 22, ratio: 120 / 170 },
+      scratcher: { label: "爪とぎ", src: "./item-scratcher.svg", width: 16, ratio: 160 / 100 },
+      cover: { label: "コードカバー", src: "./item-cover.svg", width: 26, ratio: 60 / 220 },
+      bowl: { label: "食器と水", src: "./item-bowl.svg", width: 18, ratio: 80 / 180 }
+    };
+    // AIが置き場所を返さなかったときに使う、床の上の位置(左からの%)
+    var FALLBACK_X = [16, 84, 38, 62, 28, 72];
+    // 壁に浮かないように、設備の足元はここより下にします(写真の上からの%)
+    var FLOOR_MIN = 62;
+    var FACE_WIDTH = 13, FACE_RATIO = 110 / 120;
+
+    function $(id) { return document.getElementById(id); }
+    function el(tag, cls, text) {
+      var n = document.createElement(tag);
+      if (cls) n.className = cls;
+      if (text) n.textContent = text;
+      return n;
+    }
+    function sticker(src, cls, left, top, width) {
+      var im = el("img", "sticker " + cls);
+      im.src = src;
+      im.alt = "";
+      im.style.left = left + "%";
+      im.style.top = top + "%";
+      im.style.width = width + "%";
+      return im;
+    }
+
+    var room = P.loadRoom();
+    if (!room) {
+      $("empty").hidden = false;
+    } else {
+      $("compare").hidden = false;
+      // イラストの高さを写真に対する%で求めるため、写真の縦横比が分かってから描きます
+      $("after-img").onload = function () { render(this.naturalWidth / this.naturalHeight); };
+      $("before-img").src = room.photo;
+      $("after-img").src = room.photo;
+    }
+
+    function render(aspect) {
+      var faceHeight = FACE_WIDTH * FACE_RATIO * aspect;
+
+      room.result.items.filter(function (it) { return it.mood !== "like"; }).forEach(function (it) {
+        if (it.box) {
+          var mark = el("div", "mark mischief");
+          mark.style.top = it.box[0] / 10 + "%";
+          mark.style.left = it.box[1] / 10 + "%";
+          mark.style.height = (it.box[2] - it.box[0]) / 10 + "%";
+          mark.style.width = (it.box[3] - it.box[1]) / 10 + "%";
+          $("before-marks").appendChild(mark);
+          // 枠の中を隠さないように、猫の顔は枠の上に載せます
+          $("before-marks").appendChild(sticker("./cat-mischief.svg", "on-floor", (it.box[1] + it.box[3]) / 20, Math.max(it.box[0] / 10, faceHeight), FACE_WIDTH));
+        }
+        var li = el("li");
+        li.appendChild(el("strong", "", it.object));
+        li.appendChild(document.createTextNode(": " + it.say));
+        $("before-list").appendChild(li);
+      });
+
+      (room.result.addons || []).forEach(function (a, i) {
+        var kind = ADDONS[a.kind];
+        var x = a.box ? (a.box[1] + a.box[3]) / 20 : FALLBACK_X[i % FALLBACK_X.length];
+        var height = kind.width * kind.ratio * aspect;
+        var bottom = Math.max(a.box ? a.box[2] / 10 : 96, FLOOR_MIN, height + 1);
+        $("after-marks").appendChild(sticker(kind.src, "on-floor", x, Math.min(bottom, 99), kind.width));
+        var li = el("li");
+        li.appendChild(el("strong", "", kind.label));
+        if (a.why) li.appendChild(document.createTextNode(": " + a.why));
+        $("after-list").appendChild(li);
+      });
+    }
+  </script>
+</body>
+</html>
