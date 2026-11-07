@@ -98,7 +98,7 @@
   /* 直接このページを開いたとき用に、状態がなければミケを仮に使う */
   function current() {
     var s = load();
-    if (s && s.type && TYPES[s.type]) return s;
+    if (s && s.name) return s;
     var d = SAMPLES[0];
     return { name: d.name, photo: d.photo, type: d.type, model: d.model, generated: false };
   }

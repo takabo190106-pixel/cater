@@ -72,7 +72,7 @@
     document.getElementById("who").textContent = s.name;
     document.getElementById("mv").setAttribute("src", s.model || P.DEFAULT_MODEL);
     document.getElementById("lead").textContent =
-      s.name + "は「" + t.likes + "」が好きなタイプ。お部屋のどこで過ごすかな?想像しながら、置いてみてください。";
+      (t ? s.name + "は「" + t.likes + "」が好きなタイプ。" : "") + "お部屋のどこで過ごすかな?想像しながら、置いてみてください。";
 
     document.getElementById("next").addEventListener("click", function () {
       location.href = "./room.html";

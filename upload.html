@@ -41,11 +41,6 @@
         <label for="name">猫の名前(わかれば)</label>
         <input type="text" id="name" maxlength="12" placeholder="例: ミケ">
       </div>
-      <div class="field">
-        <label for="type">猫の性格・様子</label>
-        <select id="type"></select>
-        <p class="hint">お店のスタッフさんから聞いた様子を選びます。</p>
-      </div>
     </div>
 
     <div class="actions">
@@ -71,12 +66,7 @@
     var hint = document.getElementById("drop-hint");
     var next = document.getElementById("next");
     var nameEl = document.getElementById("name");
-    var typeEl = document.getElementById("type");
     var photo = "";
-
-    typeEl.innerHTML = Object.keys(P.TYPES).map(function (k) {
-      return '<option value="' + k + '">' + P.TYPES[k].label + "</option>";
-    }).join("");
 
     document.getElementById("samples").innerHTML = P.SAMPLES.map(function (s) {
       return '<button class="sample" data-sample="' + s.id + '">' +
@@ -125,7 +115,6 @@
       P.save({
         name: nameEl.value.trim() || "この子",
         photo: photo,
-        type: typeEl.value,
         generated: false
       });
       location.href = "./model.html";

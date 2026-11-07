@@ -20,7 +20,7 @@
 
     <a class="back" href="./ar.html">← ARに戻る</a>
     <p class="eyebrow">STEP 04</p>
-    <h1><span id="who"></span>の目で、お部屋を見てみよう</h1>
+    <h1>猫の目で、お部屋を見てみよう</h1>
     <p class="lead">
       お部屋の写真を1枚選んでください。猫になったつもりで、気になる場所と、その対策を教えます。
     </p>
@@ -49,7 +49,7 @@
 
     <section id="loading" class="loading" hidden>
       <div class="paw">🐾</div>
-      <p><b id="who2"></b>がお部屋を見ています…(10秒ほどかかります)</p>
+      <p>猫の目でお部屋を見ています…(10秒ほどかかります)</p>
     </section>
 
     <section id="result" hidden>
@@ -84,13 +84,10 @@
   <script>
     var P = window.Preomu;
     P.renderSteps(4);
-    var s = P.current();
     var API = window.PREOMU_API || "";
 
     // 画面の部品
     function $(id) { return document.getElementById(id); }
-    $("who").textContent = s.name;
-    $("who2").textContent = s.name;
 
     var fileEl = $("file"), prev = $("preview"), hint = $("drop-hint"), go = $("go");
     var photoBase64 = "";
@@ -151,7 +148,7 @@
       }
       if (result.overall) {
         $("overall-card").hidden = false;
-        $("overall-title").textContent = s.name + "の感想";
+        $("overall-title").textContent = "猫の感想";
         $("overall").textContent = result.overall;
       } else { $("overall-card").hidden = true; }
 
@@ -199,7 +196,7 @@
       fetch(API, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ image: photoBase64, mime: "image/jpeg", catName: s.name }),
+        body: JSON.stringify({ image: photoBase64, mime: "image/jpeg" }),
         signal: ctrl.signal
       }).then(function (res) {
         return res.json().catch(function () { return {}; }).then(function (data) { return { res: res, data: data }; });
