@@ -63,7 +63,7 @@
           <img id="annotated-img" alt="解析したお部屋の写真">
           <div id="annotated-marks"></div>
         </div>
-        <figcaption class="hint">番号を押すと、そのコメントへ移動します。黒い番号は困りごと、白い番号は居心地のよさそうな場所です。印の位置もAIの推測です。</figcaption>
+        <figcaption class="hint">枠を押すと、そのコメントへ移動します。実線は困りごと、点線は居心地のよさそうな場所です。枠の位置もAIの推測です。</figcaption>
       </figure>
       <div id="items"></div>
       <p class="hint" id="ai-note">AIの推測です。実際のお部屋の様子とは違うことがあります。</p>
@@ -169,18 +169,15 @@
         if (it.box && !opts.exampleNote) {
           pin += 1;
           var kind = like ? "like" : "mischief";
-          // 右端の枠は、番号が写真からはみ出さないように右寄せにします
-          var mark = el("a", "mark " + kind + (it.box[1] > 900 ? " at-right" : ""));
+          var mark = el("a", "mark " + kind);
           mark.href = "#item-" + pin;
-          mark.setAttribute("aria-label", pin + "番: " + it.object);
+          mark.setAttribute("aria-label", it.object);
           mark.style.top = it.box[0] / 10 + "%";
           mark.style.left = it.box[1] / 10 + "%";
           mark.style.height = (it.box[2] - it.box[0]) / 10 + "%";
           mark.style.width = (it.box[3] - it.box[1]) / 10 + "%";
-          mark.appendChild(el("span", "pin " + kind, String(pin)));
           marks.appendChild(mark);
           box.id = "item-" + pin;
-          head.appendChild(el("span", "pin " + kind, String(pin)));
         }
         head.appendChild(el("div", "icon", like ? "🛋️" : "🐾"));
         head.appendChild(el("h3", "", it.object));
